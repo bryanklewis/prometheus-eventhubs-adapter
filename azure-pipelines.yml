@@ -1,0 +1,78 @@
+trigger:
+  branches:
+    include:
+    - master
+    - feature/*
+    - bugfix/*
+    - refs/tags/*
+
+variables:
+    GOVERSION: '1.12'
+    LDFLAGS: '"-w -s -X=main.Version=$(Build.SourceBranchName) -X=main.Commit=$(Build.SourceVersion) -X=main.Build=$(Build.BuildNumber)"'
+
+jobs:
+- job: linux
+  pool:
+    vmImage: 'ubuntu-16.04'
+  variables:
+    CGO_ENABLED: '0'
+    GOOS: 'linux'
+    GOARCH: 'amd64'
+
+  steps:
+    - task: GoTool@0
+      displayName: 'Use Go $(GOVERSION)'
+      inputs:
+        version: '$(GOVERSION)'
+
+    - task: Go@0
+      displayName: 'Show build environment'
+      inputs:
+        command: custom
+        customCommand: env
+    
+    - task: Go@0
+      displayName: 'Compile $(GOOS)/$(GOARCH)'
+      inputs:
+        command: build
+        arguments: '-ldflags=$(LDFLAGS) -o "$(Build.BinariesDirectory)/$(System.TeamProject)"'
+
+    - task: CopyFiles@2
+      displayName: 'Stage compiled app'
+      inputs:
+        sourceFolder: $(Build.BinariesDirectory)
+        contents: '*' 
+        targetFolder: $(Build.ArtifactStagingDirectory)
+
+- job: windows
+  pool:
+    vmImage: 'vs2017-win2016'
+  variables:
+    CGO_ENABLED: '0'
+    GOOS: 'windows'
+    GOARCH: 'amd64'
+  
+  steps:
+    - task: GoTool@0
+      displayName: 'Use Go $(GOVERSION)'
+      inputs:
+        version: '$(GOVERSION)'
+    
+    - task: Go@0
+      displayName: 'Show build environment'
+      inputs:
+        command: custom
+        customCommand: env
+
+    - task: Go@0
+      displayName: 'Compile $(GOOS)/$(GOARCH)'
+      inputs:
+        command: build
+        arguments: '-ldflags="$(LDFLAGS)" -o "$(Build.BinariesDirectory)\$(System.TeamProject).exe"'
+
+    - task: CopyFiles@2
+      displayName: 'Stage compiled application'
+      inputs:
+        sourceFolder: $(Build.BinariesDirectory)
+        contents: '*' 
+        targetFolder: $(Build.ArtifactStagingDirectory)
