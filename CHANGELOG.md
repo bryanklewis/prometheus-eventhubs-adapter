@@ -9,7 +9,6 @@ This project adheres to [Semantic Versioning]( https://semver.org/ ).
 ### Deprecated
 ### Removed
 ### Fixed
-### Security
 
 ## 0.1.0-preview - TBD July 2019
 ### Added

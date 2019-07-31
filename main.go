@@ -29,10 +29,6 @@ import (
 	"context"
 	"io/ioutil"
 	"net/http"
-	"os"
-	"os/signal"
-	"sync/atomic"
-	"syscall"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -40,12 +36,10 @@ import (
 	"github.com/golang/snappy"
 
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	io_prometheus_client "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/prompb"
 
-	"github.com/bryanklewis/prometheus-eventhubs-adapter/hub"
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/log"
 )
 
@@ -58,10 +52,10 @@ var (
 
 func main() {
 	log.Info().Str("version", Version).Str("commit", Commit).Str("build", Build).Msg("prometheus-eventhubs-adapter starting")
-	appCfg, hubCfg := GetConfig()
+	//appCfg, hubCfg := GetConfig()
 
-	writer := hub.NewClient(hubCfg)
-	log.Info().Str("write-encoding", hubCfg.Serializer.ADXFormat()).Msg("created writer")
+	/*writer := hub.NewClient(hubCfg)
+	log.Info().Str("write-encoding", hubCfg.Serializer.ADXFormat()).Msg("created event hub writer")
 
 	// Set GIN_MODE
 	if e := log.Debug(); e.Enabled() {
@@ -122,7 +116,7 @@ func main() {
 	// Close event hub client
 	if err := writer.Hub.Close(ctx); err != nil {
 		log.Error().Err(err).Msg("close event hub error")
-	}
+	}*/
 
 	log.Info().Str("version", Version).Str("commit", Commit).Str("build", Build).Msg("prometheus-eventhubs-adapter exiting")
 }
@@ -133,6 +127,10 @@ type writer interface {
 }
 
 // logHandler initializes a gin logging middleware.
+//
+// Used by the global router.Use() to generate a combined HTTP access and error log.
+// An array of routes (example: []string{"/metrics", "/skip"}) can be passed to
+// exclude a route from logging.
 func logHandler(skipPaths ...[]string) gin.HandlerFunc {
 	var newSkipPaths []string
 	if len(skipPaths) > 0 {
@@ -190,7 +188,12 @@ func logHandler(skipPaths ...[]string) gin.HandlerFunc {
 	}
 }
 
-// timeHandler uses Prometheus histogram to track HTTP request time
+// timeHandler initializes a gin middleware to track HTTP request time
+//
+// To allow tracking of different routes, timeHandler is intentionally not set
+// in the global gin router.Use(). Instead, each route exposed with router.VERB
+// should list this middleware first, then the desired application handler.
+// Uses Prometheus histogram to track time.
 func timeHandler(path string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
@@ -231,14 +234,14 @@ func writeHandler(writer writer) func(c *gin.Context) {
 		samples := protoToSamples(&req)
 		receivedSamples.Add(float64(len(samples)))
 
-		ctx, cancel := context.WithCancel(c)
-		defer cancel()
+		//ctx, cancel := context.WithCancel(c)
+		//defer cancel()
 
-		if err := sendSamples(ctx, writer, samples); err != nil {
+		/*if err := sendSamples(ctx, writer, samples); err != nil {
 			c.AbortWithStatus(http.StatusInternalServerError)
 			log.ErrorObj(err).Int("num_samples", len(samples)).Msg("Error sending samples to remote storage")
 			return
-		}
+		}*/
 
 		counter, err := sentSamples.GetMetricWithLabelValues(writer.Name())
 		if err != nil {
@@ -263,7 +266,7 @@ func getCounterValue(counter prometheus.Counter) float64 {
 	return dtoMetric.GetCounter().GetValue()
 }
 
-// protoToSamples converts a Prometheus protobuf WriteRequest to Prometheus model Samples
+// protoToSamples converts a Prometheus protobuf WriteRequest to Prometheus Samples
 func protoToSamples(req *prompb.WriteRequest) model.Samples {
 	var samples model.Samples
 	for _, ts := range req.Timeseries {
@@ -284,6 +287,7 @@ func protoToSamples(req *prompb.WriteRequest) model.Samples {
 	return samples
 }
 
+/*
 func sendSamples(ctx context.Context, w writer, samples model.Samples) error {
 	begin := time.Now()
 
@@ -300,3 +304,4 @@ func sendSamples(ctx context.Context, w writer, samples model.Samples) error {
 
 	return nil
 }
+*/

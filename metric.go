@@ -73,8 +73,8 @@ var (
 		},
 		[]string{"path"},
 	)
-	
-	writeThroughput     = util.NewThroughputCalc(time.Second)
+
+	writeThroughput = util.NewThroughputCalc(time.Second)
 )
 
 func init() {

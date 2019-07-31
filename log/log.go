@@ -1,4 +1,5 @@
 package log
+
 // Package log provides a custom global logger.
 // Based on zerolog's global logger https://godoc.org/github.com/rs/zerolog/log
 
@@ -33,14 +34,21 @@ import (
 	"github.com/rs/zerolog"
 )
 
+const (
+	// The log level to use [ \"error\", \"warn\", \"info\", \"debug\" ].
+	defaultLogLevel = zerolog.InfoLevel
+)
+
 // Logger is the global root logger.
 //
-// Normally not called directly, but through one of the functions below.
-var Logger zerolog.Logger
+// Not called directly, but through one of the package functions below.
+var (
+	Logger zerolog.Logger
+)
 
 // init configures default logging
 func init() {
-	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	zerolog.SetGlobalLevel(defaultLogLevel)
 	zerolog.TimestampFieldName = "timestamp"
 	zerolog.TimeFieldFormat = time.RFC3339
 	zerolog.TimestampFunc = func() time.Time {
