@@ -17,6 +17,7 @@ package main
 */
 
 import (
+	"encoding/json"
 	"flag"
 	"os"
 	"path/filepath"
@@ -30,8 +31,8 @@ import (
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/log"
 )
 
-// initConfig initializes all configuration settings
-func initConfig() {
+// newConfig initializes all configuration settings
+func newConfig() {
 	// Config file
 	viper.SetConfigName(AppName)
 	viper.SetConfigType("toml")
@@ -96,7 +97,7 @@ func initConfig() {
 	flag.String("log_level", "info", "The log level to use [ \"error\", \"warn\", \"info\", \"debug\" ].")
 	viper.SetDefault("log_level", "info")
 
-	flag.String("send_encoding", "json", "Encoding to use when sending events [ \"json\", \"avro-json\" ].")
+	flag.String("send_encoding", "json", "Encoding to use when sending events [ \"json\", \"json-avro\" ].")
 	viper.SetDefault("send_encoding", "json")
 
 	flag.Bool("send_batch", true, "Send batch events or single events.")
@@ -106,4 +107,13 @@ func initConfig() {
 	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
 	pflag.Parse()
 	viper.BindPFlags(pflag.CommandLine)
+
+	// Show config when debugging
+	debugConfig := viper.AllSettings()
+	debugConfigJSON, err := json.Marshal(debugConfig)
+	if err != nil {
+		log.Debug().Err(err).Msg("unable to marshal config to JSON")
+	} else {
+		log.Debug().RawJSON("viper-config", debugConfigJSON).Msg("show all config")
+	}
 }
