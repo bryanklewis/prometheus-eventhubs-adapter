@@ -17,7 +17,6 @@ package main
 */
 
 import (
-	"encoding/json"
 	"flag"
 	"os"
 	"path/filepath"
@@ -110,10 +109,5 @@ func newConfig() {
 
 	// Show config when debugging
 	debugConfig := viper.AllSettings()
-	debugConfigJSON, err := json.Marshal(debugConfig)
-	if err != nil {
-		log.Debug().Err(err).Msg("unable to marshal config to JSON")
-	} else {
-		log.Debug().RawJSON("viper-config", debugConfigJSON).Msg("show all config")
-	}
+	log.Debug().Fields(debugConfig).Msg("show config")
 }
