@@ -56,8 +56,8 @@ var (
 )
 
 func main() {
+	initConfig()
 	log.Info().Str("version", Version).Str("commit", Commit).Str("build", Build).Msgf("%s starting", AppName)
-	newConfig()
 
 	/*writer := hub.NewClient(hubCfg)
 	log.Info().Str("write-encoding", hubCfg.Serializer.ADXFormat()).Msg("created event hub writer")

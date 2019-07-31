@@ -15,6 +15,7 @@ require (
 	github.com/prometheus/common v0.6.0
 	github.com/prometheus/prometheus v2.5.0+incompatible
 	github.com/rs/zerolog v1.14.3
+	github.com/spf13/pflag v1.0.3
 	github.com/spf13/viper v1.4.0
 	google.golang.org/genproto v0.0.0-20190708153700-3bdd9d9f5532 // indirect
 )

@@ -17,19 +17,21 @@ package main
 */
 
 import (
+	"flag"
 	"os"
 	"path/filepath"
 	"runtime"
 	"time"
 
 	homedir "github.com/mitchellh/go-homedir"
+	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/log"
 )
 
-// newConfig initializes all configuration settings
-func newConfig() {
+// initConfig initializes all configuration settings
+func initConfig() {
 	// Config file
 	viper.SetConfigName(AppName)
 	viper.SetConfigType("toml")
@@ -72,26 +74,36 @@ func newConfig() {
 	}
 	log.Debug().Msg("configuration file detected (optional)")
 
-	// Defaults
+	// Config environment vars
+	// Will check for a environment variable with a name matching the key
+	// uppercased and prefixed with the EnvPrefix if set.
+	viper.SetEnvPrefix("adap")
+	viper.AutomaticEnv()
 
-	// The timeout to use when sending samples to the remote storage.
-	viper.SetDefault("connection_timeout", (5 * time.Second))
+	// Config commandline flags and defaults
+	flag.Duration("connection_timeout", 5*time.Second, "The timeout to use when sending samples to the remote storage.")
+	viper.SetDefault("connection_timeout", 5*time.Second)
 
-	// Address to listen on for web endpoints.
+	flag.String("listen_address", ":9201", "Address to listen on for web endpoints.")
 	viper.SetDefault("listen_address", ":9201")
 
-	// Path for write requests.
+	flag.String("write_path", "/write", "Path for write requests.")
 	viper.SetDefault("write_path", "/write")
 
-	// Path for telemetry scraps.
+	flag.String("telemetry_path", "/metrics", "Path for telemetry scraps.")
 	viper.SetDefault("telemetry_path", "/metrics")
 
-	// The log level to use [ \"error\", \"warn\", \"info\", \"debug\" ].
+	flag.String("log_level", "info", "The log level to use [ \"error\", \"warn\", \"info\", \"debug\" ].")
 	viper.SetDefault("log_level", "info")
 
-	// Encoding to use when sending events [ \"json\", \"avro-json\" ].
-	viper.SetDefault("send_encoding", "info")
+	flag.String("send_encoding", "json", "Encoding to use when sending events [ \"json\", \"avro-json\" ].")
+	viper.SetDefault("send_encoding", "json")
 
-	// Send batch events or single events.
-	viper.SetDefault("send_batch", "true")
+	flag.Bool("send_batch", true, "Send batch events or single events.")
+	viper.SetDefault("send_batch", true)
+
+	// Viper uses "pflag", add standard library "flag" to "pflag"
+	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
+	pflag.Parse()
+	viper.BindPFlags(pflag.CommandLine)
 }
