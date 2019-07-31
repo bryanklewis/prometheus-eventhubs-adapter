@@ -28,20 +28,6 @@ import (
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/log"
 )
 
-// Defaults
-const (
-	// The timeout to use when sending samples to the remote storage.
-	defaultTimeout = 5 * time.Second
-	// Address to listen on for web endpoints.
-	defaultListen = ":9201"
-	// Path for write requests.
-	defaultWritePath = "/write"
-	// Path for telemetry scraps.
-	defaultTelemetry = "/metrics"
-	// Encoding to use when sending events [ \"json\", \"avro-json\" ].
-	defaultEncoding = "json"
-)
-
 // newConfig initializes all configuration settings
 func newConfig() {
 	// Config file
@@ -85,14 +71,27 @@ func newConfig() {
 		}
 	}
 	log.Debug().Msg("configuration file detected (optional)")
-}
 
-func parseSendTimeout(value string) time.Duration {
-	tm, err := time.ParseDuration(value)
-	if err != nil {
-		log.ErrorObj(err).Str("timeout-value", value).Msg("Invalid timeout duration provided. Using default timeout.")
-		return defaultTimeout
-	}
+	// Defaults
 
-	return tm
+	// The timeout to use when sending samples to the remote storage.
+	viper.SetDefault("connection_timeout", (5 * time.Second))
+
+	// Address to listen on for web endpoints.
+	viper.SetDefault("listen_address", ":9201")
+
+	// Path for write requests.
+	viper.SetDefault("write_path", "/write")
+
+	// Path for telemetry scraps.
+	viper.SetDefault("telemetry_path", "/metrics")
+
+	// The log level to use [ \"error\", \"warn\", \"info\", \"debug\" ].
+	viper.SetDefault("log_level", "info")
+
+	// Encoding to use when sending events [ \"json\", \"avro-json\" ].
+	viper.SetDefault("send_encoding", "info")
+
+	// Send batch events or single events.
+	viper.SetDefault("send_batch", "true")
 }
