@@ -17,7 +17,13 @@ package main
 */
 
 import (
+	"os"
+	"path/filepath"
+	"runtime"
 	"time"
+
+	homedir "github.com/mitchellh/go-homedir"
+	"github.com/spf13/viper"
 
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/log"
 )
@@ -36,17 +42,49 @@ const (
 	defaultEncoding = "json"
 )
 
-// Config for general application options
-type Config struct {
-	RemoteTimeout time.Duration
-	ListenAddr    string
-	WritePath     string
-	TelemetryPath string
-}
+// newConfig initializes all configuration settings
+func newConfig() {
+	// Config file
+	viper.SetConfigName(AppName)
+	viper.SetConfigType("toml")
 
-// initConfig initializes all configuration settings
-func initConfig() {
-	//
+	// Config file search: adapter executable directory
+	if ex, err := os.Executable(); err != nil {
+		log.Debug().Err(err).Msg("failed to detect executable directory")
+	} else {
+		viper.AddConfigPath(filepath.Dir(ex))
+	}
+
+	// Config file search: Unix-like system configuration directory
+	if runtime.GOOS != "windows" {
+		viper.AddConfigPath("/etc/" + AppName + "/")
+	}
+
+	// Config file search: current working directory
+	if workingpath, err := os.Getwd(); err != nil {
+		log.Debug().Err(err).Msg("failed to detect working directory")
+	} else {
+		viper.AddConfigPath(workingpath)
+	}
+
+	// Config file search: OS-specific home directory
+	if homepath, err := homedir.Dir(); err != nil {
+		log.Debug().Err(err).Msg("failed to detect home directory")
+	} else {
+		viper.AddConfigPath(homepath)
+	}
+
+	// Read config file
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			// Config file not found; ignore since its optional
+			log.Debug().Msg("configuration file not detected (optional)")
+		} else {
+			// Config file was found but error was produced
+			log.Panic().Err(err).Msg("Fatal error loading config file \n")
+		}
+	}
+	log.Debug().Msg("configuration file detected (optional)")
 }
 
 func parseSendTimeout(value string) time.Duration {

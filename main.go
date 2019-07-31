@@ -43,6 +43,11 @@ import (
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/log"
 )
 
+const (
+	// AppName is the application name. Value is static and will not change.
+	AppName = "prometheus-eventhubs-adapter"
+)
+
 // Build information. Populated at compile-time using -ldflags "-X main.BUILD=value"
 var (
 	Version string
@@ -51,8 +56,8 @@ var (
 )
 
 func main() {
-	log.Info().Str("version", Version).Str("commit", Commit).Str("build", Build).Msg("prometheus-eventhubs-adapter starting")
-	//appCfg, hubCfg := GetConfig()
+	log.Info().Str("version", Version).Str("commit", Commit).Str("build", Build).Msgf("%s starting", AppName)
+	newConfig()
 
 	/*writer := hub.NewClient(hubCfg)
 	log.Info().Str("write-encoding", hubCfg.Serializer.ADXFormat()).Msg("created event hub writer")
@@ -118,7 +123,7 @@ func main() {
 		log.Error().Err(err).Msg("close event hub error")
 	}*/
 
-	log.Info().Str("version", Version).Str("commit", Commit).Str("build", Build).Msg("prometheus-eventhubs-adapter exiting")
+	log.Info().Str("version", Version).Str("commit", Commit).Str("build", Build).Msgf("%s exiting", AppName)
 }
 
 type writer interface {
