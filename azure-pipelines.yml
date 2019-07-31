@@ -35,7 +35,7 @@ jobs:
       displayName: 'Compile $(GOOS)/$(GOARCH)'
       inputs:
         command: build
-        arguments: '-ldflags=''$(LDFLAGS)'' -o "$(Build.BinariesDirectory)/$(System.TeamProject)"'
+        arguments: '-ldflags=\"$(LDFLAGS)\" -o "$(Build.BinariesDirectory)/$(System.TeamProject)"'
 
     - task: CopyFiles@2
       displayName: 'Stage compiled app'
@@ -68,7 +68,7 @@ jobs:
       displayName: 'Compile $(GOOS)/$(GOARCH)'
       inputs:
         command: build
-        arguments: '-ldflags=''$(LDFLAGS)'' -o "$(Build.BinariesDirectory)\$(System.TeamProject).exe"'
+        arguments: '-ldflags=\"$(LDFLAGS)\" -o "$(Build.BinariesDirectory)\$(System.TeamProject).exe"'
 
     - task: CopyFiles@2
       displayName: 'Stage compiled application'
