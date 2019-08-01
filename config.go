@@ -30,7 +30,46 @@ import (
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/log"
 )
 
-// newConfig initializes all configuration settings
+type config struct {
+	connectionTimeout time.Duration
+	listenAddress     string
+	writePath         string
+	telemetryPath     string
+	logLevel          string
+	writeEncoding     string
+	writeBatch        bool
+	//writeHub hub.Config
+}
+
+var (
+	adapterConfig = &config{}
+)
+
+func init() {
+	// Config commandline flags and defaults
+	flag.DurationVar(&adapterConfig.connectionTimeout, "connection_timeout", 5*time.Second, "The timeout to use when sending samples to the remote storage.")
+	viper.SetDefault("connection_timeout", 5*time.Second)
+
+	flag.StringVar(&adapterConfig.listenAddress, "listen_address", ":9201", "Address to listen on for web endpoints.")
+	viper.SetDefault("listen_address", ":9201")
+
+	flag.StringVar(&adapterConfig.writePath, "write_path", "/write", "Path for write requests.")
+	viper.SetDefault("write_path", "/write")
+
+	flag.StringVar(&adapterConfig.telemetryPath, "telemetry_path", "/metrics", "Path for telemetry scraps.")
+	viper.SetDefault("telemetry_path", "/metrics")
+
+	flag.StringVar(&adapterConfig.logLevel, "log_level", "info", "The log level to use [ \"error\", \"warn\", \"info\", \"debug\" ].")
+	viper.SetDefault("log_level", "info")
+
+	flag.StringVar(&adapterConfig.writeEncoding, "write_encoding", "json", "Encoding to use when sending events [ \"json\", \"json-avro\" ].")
+	viper.SetDefault("write_encoding", "json")
+
+	flag.BoolVar(&adapterConfig.writeBatch, "write_batch", true, "Send batch events or single events.")
+	viper.SetDefault("write_batch", true)
+}
+
+// newConfig provides configuration setup
 func newConfig() {
 	// Config file
 	viper.SetConfigName(AppName)
@@ -80,28 +119,7 @@ func newConfig() {
 	viper.SetEnvPrefix("adap")
 	viper.AutomaticEnv()
 
-	// Config commandline flags and defaults
-	flag.Duration("connection_timeout", 5*time.Second, "The timeout to use when sending samples to the remote storage.")
-	viper.SetDefault("connection_timeout", 5*time.Second)
-
-	flag.String("listen_address", ":9201", "Address to listen on for web endpoints.")
-	viper.SetDefault("listen_address", ":9201")
-
-	flag.String("write_path", "/write", "Path for write requests.")
-	viper.SetDefault("write_path", "/write")
-
-	flag.String("telemetry_path", "/metrics", "Path for telemetry scraps.")
-	viper.SetDefault("telemetry_path", "/metrics")
-
-	flag.String("log_level", "info", "The log level to use [ \"error\", \"warn\", \"info\", \"debug\" ].")
-	viper.SetDefault("log_level", "info")
-
-	flag.String("send_encoding", "json", "Encoding to use when sending events [ \"json\", \"json-avro\" ].")
-	viper.SetDefault("send_encoding", "json")
-
-	flag.Bool("send_batch", true, "Send batch events or single events.")
-	viper.SetDefault("send_batch", true)
-
+	// Config commandline flags
 	// Viper uses "pflag", add standard library "flag" to "pflag"
 	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
 	pflag.Parse()
@@ -109,5 +127,5 @@ func newConfig() {
 
 	// Show config when debugging
 	debugConfig := viper.AllSettings()
-	log.Debug().Fields(debugConfig).Msg("show config")
+	log.Info().Fields(debugConfig).Msg("show config")
 }

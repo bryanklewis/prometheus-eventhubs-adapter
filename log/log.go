@@ -35,7 +35,6 @@ import (
 )
 
 const (
-	// The log level to use [ \"error\", \"warn\", \"info\", \"debug\" ].
 	defaultLogLevel = zerolog.InfoLevel
 )
 
