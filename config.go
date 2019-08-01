@@ -27,6 +27,7 @@ import (
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
+	"github.com/bryanklewis/prometheus-eventhubs-adapter/hub"
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/log"
 )
 
@@ -36,17 +37,15 @@ type config struct {
 	writePath         string
 	telemetryPath     string
 	logLevel          string
-	writeEncoding     string
-	writeBatch        bool
-	//writeHub hub.Config
+	writeHub          hub.EventHubConfig
 }
 
 var (
 	adapterConfig = &config{}
 )
 
-func init() {
-	// Config commandline flags and defaults
+// parseFlags parses the adapter configuration flags
+func parseFlags() {
 	flag.DurationVar(&adapterConfig.connectionTimeout, "connection_timeout", 5*time.Second, "The timeout to use when sending samples to the remote storage.")
 	viper.SetDefault("connection_timeout", 5*time.Second)
 
@@ -62,14 +61,10 @@ func init() {
 	flag.StringVar(&adapterConfig.logLevel, "log_level", "info", "The log level to use [ \"error\", \"warn\", \"info\", \"debug\" ].")
 	viper.SetDefault("log_level", "info")
 
-	flag.StringVar(&adapterConfig.writeEncoding, "write_encoding", "json", "Encoding to use when sending events [ \"json\", \"json-avro\" ].")
-	viper.SetDefault("write_encoding", "json")
-
-	flag.BoolVar(&adapterConfig.writeBatch, "write_batch", true, "Send batch events or single events.")
-	viper.SetDefault("write_batch", true)
+	hub.ParseFlagsWriter(&adapterConfig.writeHub)
 }
 
-// newConfig provides configuration setup
+// newConfig initializes configuration setup
 func newConfig() {
 	// Config file
 	viper.SetConfigName(AppName)
@@ -119,7 +114,9 @@ func newConfig() {
 	viper.SetEnvPrefix("adap")
 	viper.AutomaticEnv()
 
-	// Config commandline flags
+	// Config commandline flags and defaults
+	parseFlags()
+
 	// Viper uses "pflag", add standard library "flag" to "pflag"
 	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
 	pflag.Parse()
