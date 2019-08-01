@@ -124,5 +124,5 @@ func newConfig() {
 
 	// Show config when debugging
 	debugConfig := viper.AllSettings()
-	log.Info().Fields(debugConfig).Msg("show config")
+	log.Debug().Fields(debugConfig).Msg("show config")
 }

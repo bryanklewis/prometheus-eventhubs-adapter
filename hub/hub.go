@@ -31,9 +31,9 @@ import (
 
 // EventHubConfig for an Event Hub
 type EventHubConfig struct {
-	encoding     string
-	batch        bool
+	batch bool
 	// Serializer to use when sending or recieving events
+	serializer string
 	//serializer serialize.Serializer
 }
 
@@ -45,11 +45,11 @@ type Client struct {
 
 // ParseFlagsWriter parses the configuration flags specific to Event Hubs writer
 func ParseFlagsWriter(cfg *EventHubConfig) *EventHubConfig {
-	flag.StringVar(&cfg.encoding, "write_encoding", "json", "Encoding to use when sending events [ \"json\", \"json-avro\" ].")
-	viper.SetDefault("write_encoding", "json")
-
 	flag.BoolVar(&cfg.batch, "write_batch", true, "Send batch events or single events.")
 	viper.SetDefault("write_batch", true)
-	
+
+	flag.StringVar(&cfg.serializer, "write_serializer", "json", "Serializer to use when sending events [ \"json\", \"json-avro\" ].")
+	viper.SetDefault("write_serializer", "json")
+
 	return cfg
 }

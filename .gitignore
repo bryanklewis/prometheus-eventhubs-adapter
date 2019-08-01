@@ -12,15 +12,6 @@ _obj
 _test
 
 # Architecture specific extensions/prefixes
-# *.[568vq]
-[568vq].out
-
-*.cgo1.go
-*.cgo2.c
-_cgo_defun.c
-_cgo_gotypes.go
-_cgo_export.*
-
 _testmain.go
 
 # Editor swap files
@@ -30,6 +21,7 @@ _testmain.go
 
 # Compiled exe
 /prometheus-eventhubs-adapter*
+!prometheus-eventhubs-adapter.toml
 
 # Editor settings
 /.vscode
