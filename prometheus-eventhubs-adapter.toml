@@ -1,6 +1,5 @@
 # prometheus-eventhubs-adapter
 # Settings file in TOML (https://github.com/toml-lang/toml)
-#
 # See project for more information: https://github.com/bryanklewis/prometheus-eventhubs-adapter
 #
 # All settings are #commented out, uncomment settings you want to define.
