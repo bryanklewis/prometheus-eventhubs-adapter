@@ -3,7 +3,7 @@
 #
 # See project for more information: https://github.com/bryanklewis/prometheus-eventhubs-adapter
 #
-# All settings are #commented out, uncomment settings you need to define.
+# All settings are #commented out, uncomment settings you want to define.
 
 # -------------------- Adapter --------------------
 #connection_timeout = "5s" # Units: "ns", "ms", "s", "m", "h"
