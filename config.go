@@ -31,6 +31,7 @@ import (
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/log"
 )
 
+// config represents settings for the application
 type config struct {
 	connectionTimeout time.Duration
 	listenAddress     string

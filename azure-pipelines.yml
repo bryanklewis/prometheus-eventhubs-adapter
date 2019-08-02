@@ -4,7 +4,7 @@ trigger:
     - master
     - feature/*
     - bugfix/*
-    - refs/tags/*
+    - refs/tags/v*
 
 variables:
     GOVERSION: '1.12'

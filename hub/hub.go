@@ -43,7 +43,7 @@ type Client struct {
 	cfg *EventHubConfig
 }
 
-// ParseFlagsWriter parses the configuration flags specific to Event Hubs writer
+// ParseFlagsWriter gets flags specific to Event Hubs writer
 func ParseFlagsWriter(cfg *EventHubConfig) *EventHubConfig {
 	flag.BoolVar(&cfg.batch, "write_batch", true, "Send batch events or single events.")
 	viper.SetDefault("write_batch", true)
