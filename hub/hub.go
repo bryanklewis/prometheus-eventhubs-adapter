@@ -40,6 +40,7 @@ type EventHubConfig struct {
 	CertPath     string
 	CertPassword string
 	Batch        bool
+	ADXMapping   string
 	Serializer   serializers.SerializerConfig
 }
 
