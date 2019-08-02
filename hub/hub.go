@@ -43,7 +43,7 @@ type EventHubConfig struct {
 	Serializer   string
 }
 
-// Client sends Prometheus samples to Event Hubs
-type Client struct {
+// EventHubClient sends Prometheus samples to Event Hubs
+type EventHubClient struct {
 	Hub *eventhub.Hub
 }
