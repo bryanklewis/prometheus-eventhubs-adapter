@@ -21,7 +21,7 @@ import (
 	//"time"
 
 	//"github.com/bryanklewis/prometheus-eventhubs-adapter/log"
-	//"github.com/bryanklewis/prometheus-eventhubs-adapter/serializer"
+	"github.com/bryanklewis/prometheus-eventhubs-adapter/serializers"
 
 	eventhub "github.com/Azure/azure-event-hubs-go/v2"
 	//"github.com/prometheus/common/model"
@@ -45,5 +45,6 @@ type EventHubConfig struct {
 
 // EventHubClient sends Prometheus samples to Event Hubs
 type EventHubClient struct {
-	Hub *eventhub.Hub
+	Hub        *eventhub.Hub
+	Serializer *serializers.Serializer
 }
