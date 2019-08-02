@@ -26,10 +26,57 @@ package serializers
 import (
 	//"math"
 	//"time"
+	"fmt"
+	"strings"
 
 	"github.com/prometheus/common/model"
 	//"github.com/bryanklewis/prometheus-eventhubs-adapter/log"
 )
+
+// KustoFormat is an enum for Azure Data Explorer (Kusto) data injestion formats.
+//
+// The possible formats are found in the Azure documentation.
+// See [ https://docs.microsoft.com/en-us/azure/kusto/management/data-ingestion/#supported-data-formats ]
+type KustoFormat uint8
+
+const (
+	// CSVFormat defines the csv data format.
+	CSVFormat KustoFormat = iota
+	// JSONFormat defines the json data format.
+	JSONFormat
+	// AVROFormat defines the avro data format.
+	AVROFormat
+	// NoFormat defines an absent format.
+	NoFormat
+)
+
+func (km KustoFormat) String() string {
+	switch km {
+	case CSVFormat:
+		return "csv"
+	case JSONFormat:
+		return "json"
+	case AVROFormat:
+		return "avro"
+	default:
+		return ""
+	}
+}
+
+// ParseKustoFormat converts a Kusto Data Format string into a KustoFormat value.
+// returns an error if the input string does not match known values.
+func ParseKustoFormat(formatStr string) (KustoFormat, error) {
+	switch strings.ToLower(formatStr) {
+	case "csv":
+		return CSVFormat, nil
+	case "json":
+		return JSONFormat, nil
+	case "avro":
+		return AVROFormat, nil
+	default:
+		return NoFormat, fmt.Errorf("Unknown Kusto Data Format: '%s'", strings.ToLower(formatStr))
+	}
+}
 
 // Serializer is an interface defining functions that a serializer must satisfy.
 type Serializer interface {
@@ -40,8 +87,8 @@ type Serializer interface {
 	// a byte buffer.
 	SerializeBatch(metrics model.Samples) ([]byte, error)
 
-	// Azure Data Explorer injestion format.
-	ADXFormat() string
+	// ADXFormat Azure Data Explorer data injestion format.
+	ADXFormat() KustoFormat
 }
 
 // SerializerConfig is a struct that covers the data types needed for all serializer types,

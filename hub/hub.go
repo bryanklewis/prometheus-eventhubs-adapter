@@ -40,7 +40,7 @@ type EventHubConfig struct {
 	CertPath     string
 	CertPassword string
 	Batch        bool
-	Serializer   string
+	Serializer   serializers.SerializerConfig
 }
 
 // EventHubClient sends Prometheus samples to Event Hubs

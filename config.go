@@ -97,7 +97,7 @@ func parseFlags() {
 	flag.BoolVar(&adapterConfig.writeHub.Batch, "write_batch", true, "Send batch events or single events.")
 	viper.SetDefault("write_batch", true)
 
-	flag.StringVar(&adapterConfig.writeHub.Serializer, "write_serializer", "json", "Serializer to use when sending events [ \"json\", \"avro-json\" ].")
+	flag.StringVar(&adapterConfig.writeHub.Serializer.DataFormat, "write_serializer", "json", "Serializer to use when sending events [ \"json\", \"avro-json\" ].")
 	viper.SetDefault("write_serializer", "json")
 }
 
