@@ -4,12 +4,6 @@ go 1.12
 
 require (
 	github.com/Azure/azure-event-hubs-go/v2 v2.0.0
-	github.com/Azure/azure-sdk-for-go v32.0.0+incompatible // indirect
-	github.com/Azure/go-autorest/autorest v0.5.0 // indirect
-	github.com/Azure/go-autorest/autorest/azure/auth v0.1.0 // indirect
-	github.com/Azure/go-autorest/autorest/to v0.2.0 // indirect
-	github.com/Azure/go-autorest/autorest/validation v0.1.0 // indirect
-	github.com/Azure/go-autorest/tracing v0.2.0 // indirect
 	github.com/gin-gonic/gin v1.4.0
 	github.com/gogo/protobuf v1.2.1
 	github.com/golang/snappy v0.0.1
