@@ -17,7 +17,6 @@ package hub
 */
 
 import (
-	"flag"
 	//"context"
 	//"time"
 
@@ -25,31 +24,26 @@ import (
 	//"github.com/bryanklewis/prometheus-eventhubs-adapter/serializer"
 
 	eventhub "github.com/Azure/azure-event-hubs-go/v2"
-	"github.com/spf13/viper"
 	//"github.com/prometheus/common/model"
 )
 
 // EventHubConfig for an Event Hub
 type EventHubConfig struct {
-	batch bool
-	// Serializer to use when sending or recieving events
-	serializer string
-	//serializer serialize.Serializer
+	Namespace    string
+	Hub          string
+	KeyName      string
+	KeyValue     string
+	ConnString   string
+	TenantID     string
+	ClientID     string
+	ClientSecret string
+	CertPath     string
+	CertPassword string
+	Batch        bool
+	Serializer   string
 }
 
 // Client sends Prometheus samples to Event Hubs
 type Client struct {
 	Hub *eventhub.Hub
-	cfg *EventHubConfig
-}
-
-// ParseFlagsWriter gets flags specific to Event Hubs writer
-func ParseFlagsWriter(cfg *EventHubConfig) *EventHubConfig {
-	flag.BoolVar(&cfg.batch, "write_batch", true, "Send batch events or single events.")
-	viper.SetDefault("write_batch", true)
-
-	flag.StringVar(&cfg.serializer, "write_serializer", "json", "Serializer to use when sending events [ \"json\", \"json-avro\" ].")
-	viper.SetDefault("write_serializer", "json")
-
-	return cfg
 }
