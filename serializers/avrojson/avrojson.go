@@ -1,4 +1,4 @@
-package json
+package avrojson
 
 /*
   Copyright 2019 Micron Technology, Inc.
@@ -17,10 +17,10 @@ package json
 */
 
 import (
-	"encoding/json"
 	"math"
 	"time"
 
+	"github.com/linkedin/goavro/v2"
 	"github.com/prometheus/common/model"
 
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/kusto"
@@ -30,10 +30,25 @@ import (
 const (
 	defaultMetricName model.LabelValue = "no_name"
 	defaultNaNValue   float64          = 0
+
+	// SCHEMA is the avro schema used for serialization
+	SCHEMA = `{
+		"namespace": "io.prometheus",
+		"type": "record",
+		"name": "Metric",
+		"doc:" : "A basic schema for representing Prometheus metrics",
+		"fields": [
+			{"name": "timestamp", "type": "string"},
+			{"name": "value", "type": "double"},
+			{"name": "name", "type": "string"},
+			{"name": "labels", "type": { "type": "map", "values": "string"} }
+		]
+	}`
 )
 
 // Serializer represents a serializer instance
 type Serializer struct {
+	Codec *goavro.Codec
 }
 
 // ADXFormat Azure Data Explorer injestion data format.
@@ -48,12 +63,7 @@ func (s *Serializer) ADXFormat() kusto.DataFormat {
 // Implements the serializers.Serializer interface
 func (s *Serializer) Serialize(sample model.Sample) ([]byte, error) {
 	m := s.createObject(sample)
-	serialized, err := json.Marshal(m)
-	if err != nil {
-    return []byte{}, err
-	}
-
-	return serialized, nil
+	return s.Codec.TextualFromNative(nil, m)
 }
 
 func (s *Serializer) createObject(sample model.Sample) map[string]interface{} {

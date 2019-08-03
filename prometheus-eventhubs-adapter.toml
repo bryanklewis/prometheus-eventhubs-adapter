@@ -13,4 +13,4 @@
 
 # -------------------- Event Hub Writer --------------------
 #write_batch = true
-#write_serializer = "json"
+#write_serializer = "csv"

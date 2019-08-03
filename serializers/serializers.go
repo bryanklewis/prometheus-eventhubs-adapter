@@ -27,9 +27,13 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/linkedin/goavro/v2"
 	"github.com/prometheus/common/model"
 
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/kusto"
+	"github.com/bryanklewis/prometheus-eventhubs-adapter/log"
+	"github.com/bryanklewis/prometheus-eventhubs-adapter/serializers/avrojson"
+	"github.com/bryanklewis/prometheus-eventhubs-adapter/serializers/csv"
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/serializers/json"
 )
 
@@ -37,7 +41,7 @@ import (
 type Serializer interface {
 	// Serialize takes a single Prometheus sample and turns it into a byte buffer.
 	Serialize(metric model.Sample) ([]byte, error)
-	
+
 	// ADXFormat Azure Data Explorer injestion data format.
 	ADXFormat() kusto.DataFormat
 }
@@ -47,8 +51,6 @@ type Serializer interface {
 type SerializerConfig struct {
 	// Dataformat can be one of the serializer types listed in serializers.NewSerializer.
 	DataFormat string
-
-	// Note: Additional fields can be defined here to pass to a specific serializer.
 }
 
 // NewSerializer provides a Serializer based on the given config.
@@ -56,22 +58,37 @@ type SerializerConfig struct {
 // Parses SerializerConfig.DataFormat string
 func NewSerializer(cfg *SerializerConfig) (Serializer, error) {
 	switch strings.ToLower(cfg.DataFormat) {
-	//case "csv":
-	//return NewCSVSerializer()
+	case "csv":
+		return NewCSVSerializer()
 	case "json":
 		return NewJSONSerializer()
-	//case "avro-json":
-	//return NewAvroJSONSerializer()
+	case "avro-json":
+		return NewAvroJSONSerializer()
 	default:
 		err := fmt.Errorf("Invalid data format: %s", strings.ToLower(cfg.DataFormat))
 		return nil, err
 	}
 }
 
+// NewCSVSerializer provides a 'csv' Serializer
+func NewCSVSerializer() (Serializer, error) {
+	return &csv.Serializer{}, nil
+}
+
 // NewJSONSerializer provides a 'json' Serializer
 func NewJSONSerializer() (Serializer, error) {
-	// Note: Process any specific config options here
-
-	// Return a new serializer
 	return &json.Serializer{}, nil
+}
+
+// NewAvroJSONSerializer provides a 'avro-json' Serializer
+func NewAvroJSONSerializer() (Serializer, error) {
+	codec, err := goavro.NewCodec(avrojson.SCHEMA)
+	if err != nil {
+		log.ErrorObj(err).Msg("Failed to create avro codec")
+		return nil, err
+	}
+
+	return &avrojson.Serializer{
+		Codec: codec,
+	}, nil
 }

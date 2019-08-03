@@ -1,4 +1,4 @@
-package json
+package csv
 
 /*
   Copyright 2019 Micron Technology, Inc.
@@ -40,7 +40,7 @@ type Serializer struct {
 //
 // Implements the serializers.Serializer interface
 func (s *Serializer) ADXFormat() kusto.DataFormat {
-	return kusto.JSONFormat
+	return kusto.CSVFormat
 }
 
 // Serialize takes a single Prometheus sample and turns it into a byte buffer.
@@ -50,7 +50,7 @@ func (s *Serializer) Serialize(sample model.Sample) ([]byte, error) {
 	m := s.createObject(sample)
 	serialized, err := json.Marshal(m)
 	if err != nil {
-    return []byte{}, err
+		return []byte{}, err
 	}
 
 	return serialized, nil
