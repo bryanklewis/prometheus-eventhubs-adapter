@@ -29,6 +29,7 @@ import (
 
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/hub"
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/log"
+	"github.com/bryanklewis/prometheus-eventhubs-adapter/serializers"
 )
 
 // config represents settings for the application
@@ -96,6 +97,12 @@ func parseFlags() {
 
 	flag.BoolVar(&adapterConfig.writeHub.Batch, "write_batch", true, "Send batch events or single events.")
 	viper.SetDefault("write_batch", true)
+
+	flag.IntVar(&adapterConfig.writeHub.BatchMaxBytes, "write_maxbytes", 986000, "Maximum number of bytes in an event (https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-quotas).")
+	viper.SetDefault("write_maxbytes", 986000)
+
+	flag.StringVar(&adapterConfig.writeHub.ADXMapping, "write_adxmapping", "promMap", "Azure Data Explorer data injestion mapping name.")
+	viper.SetDefault("write_adxmapping", "promMap")
 
 	// Valid values can be found in serializers.NewSerializer
 	flag.StringVar(&adapterConfig.writeHub.Serializer.DataFormat, "write_serializer", "json", "Serializer to use when sending events [ \"json\", \"avro-json\" ].")
@@ -171,4 +178,24 @@ func configLogging() {
 	// Show config when debugging
 	debugConfig := viper.AllSettings()
 	log.Debug().Fields(debugConfig).Msg("show config")
+}
+
+// getWriterConfig returns the configuration for an Event Hub Writer
+func getWriterConfig() *hub.EventHubConfig {
+	return &hub.EventHubConfig{
+		Namespace:     viper.GetString("write_namespace"),
+		Hub:           viper.GetString("write_hub"),
+		KeyName:       viper.GetString("write_keyname"),
+		KeyValue:      viper.GetString("write_keyvalue"),
+		ConnString:    viper.GetString("write_connstring"),
+		TenantID:      viper.GetString("write_tenantid"),
+		ClientID:      viper.GetString("write_clientid"),
+		ClientSecret:  viper.GetString("write_clientsecret"),
+		CertPath:      viper.GetString("write_certpath"),
+		CertPassword:  viper.GetString("write_certpassword"),
+		Batch:         viper.GetBool("write_batch"),
+		BatchMaxBytes: viper.GetInt("write_maxbytes"),
+		ADXMapping:    viper.GetString("write_adxmapping"),
+		Serializer:    serializers.SerializerConfig{DataFormat: viper.GetString("write_serializer")},
+	}
 }

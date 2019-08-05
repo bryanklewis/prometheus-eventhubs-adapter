@@ -41,6 +41,7 @@ import (
 	"github.com/prometheus/prometheus/prompb"
 	"github.com/spf13/viper"
 
+	"github.com/bryanklewis/prometheus-eventhubs-adapter/hub"
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/log"
 )
 
@@ -61,8 +62,10 @@ func main() {
 	initConfig()
 	configLogging()
 
-	//writer := hub.NewClient()
-	//log.Info().Msg("created event hub writer")
+	writer, err := hub.NewClient(getWriterConfig())
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to create event hub connection")
+	}
 
 	// Set GIN_MODE
 	if e := log.Debug(); e.Enabled() {

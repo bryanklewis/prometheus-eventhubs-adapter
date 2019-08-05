@@ -3,7 +3,9 @@ module github.com/bryanklewis/prometheus-eventhubs-adapter
 go 1.12
 
 require (
+	github.com/Azure/azure-amqp-common-go/v2 v2.0.0
 	github.com/Azure/azure-event-hubs-go/v2 v2.0.0
+	github.com/Azure/go-autorest v12.0.0+incompatible
 	github.com/gin-gonic/gin v1.4.0
 	github.com/gogo/protobuf v1.2.1
 	github.com/golang/snappy v0.0.1
