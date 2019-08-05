@@ -80,7 +80,7 @@ func (s *Serializer) createObject(sample model.Sample) map[string]interface{} {
 	var sampleValue float64 = float64(sample.Value)
 	if math.IsNaN(sampleValue) {
 		sampleValue = defaultNaNValue
-		log.Warn().Str("sample_name", string(metricName)).Msg("Sample value (float64)NaN not supported")
+		log.Warn().Str("sample_name", string(metricName)).Msg("Sample value float64 NaN not supported")
 	}
 
 	// Remove sample name from labels set

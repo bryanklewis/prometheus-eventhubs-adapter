@@ -33,7 +33,6 @@ import (
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/kusto"
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/log"
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/serializers/avrojson"
-	"github.com/bryanklewis/prometheus-eventhubs-adapter/serializers/csv"
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/serializers/json"
 )
 
@@ -58,8 +57,6 @@ type SerializerConfig struct {
 // Parses SerializerConfig.DataFormat string
 func NewSerializer(cfg *SerializerConfig) (Serializer, error) {
 	switch strings.ToLower(cfg.DataFormat) {
-	case "csv":
-		return NewCSVSerializer()
 	case "json":
 		return NewJSONSerializer()
 	case "avro-json":
@@ -68,11 +65,6 @@ func NewSerializer(cfg *SerializerConfig) (Serializer, error) {
 		err := fmt.Errorf("Invalid data format: %s", strings.ToLower(cfg.DataFormat))
 		return nil, err
 	}
-}
-
-// NewCSVSerializer provides a 'csv' Serializer
-func NewCSVSerializer() (Serializer, error) {
-	return &csv.Serializer{}, nil
 }
 
 // NewJSONSerializer provides a 'json' Serializer

@@ -98,8 +98,8 @@ func parseFlags() {
 	viper.SetDefault("write_batch", true)
 
 	// Valid values can be found in serializers.NewSerializer
-	flag.StringVar(&adapterConfig.writeHub.Serializer.DataFormat, "write_serializer", "csv", "Serializer to use when sending events [ \"csv\", \"json\", \"avro-json\" ].")
-	viper.SetDefault("write_serializer", "csv")
+	flag.StringVar(&adapterConfig.writeHub.Serializer.DataFormat, "write_serializer", "json", "Serializer to use when sending events [ \"json\", \"avro-json\" ].")
+	viper.SetDefault("write_serializer", "json")
 }
 
 // newConfig initializes configuration setup
