@@ -58,7 +58,7 @@ jobs:
       displayName: 'Publish $(GOOS) artifacts'
       inputs:
         pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        artifactName: $(GOOS)
+        artifactName: Drop
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 
@@ -108,5 +108,5 @@ jobs:
       displayName: 'Publish $(GOOS) artifacts'
       inputs:
         pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        artifactName: $(GOOS)
+        artifactName: Drop
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
