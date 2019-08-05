@@ -81,7 +81,7 @@ func main() {
 	router.Use(logHandler([]string{viper.GetString("telemetry_path")}), gin.Recovery())
 
 	// Route handlers
-	//router.POST(viper.GetString("write_path"), timeHandler("write"), writeHandler(writer))
+	router.POST(viper.GetString("write_path"), timeHandler("write"), writeHandler(writer))
 	router.GET(viper.GetString("telemetry_path"), gin.WrapH(promhttp.Handler()))
 	/*
 		// HTTP server
@@ -216,7 +216,7 @@ func timeHandler(path string) gin.HandlerFunc {
 }
 
 // writeHandler send to Event Hubs
-func writeHandler(writer writer) func(c *gin.Context) {
+func writeHandler(writer *hub.EventHubClient) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		httpRequestsTotal.Add(float64(1))
 
