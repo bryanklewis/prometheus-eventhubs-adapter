@@ -1,16 +1,16 @@
-# prometheus-eventhubs-adapter
-# Settings file in TOML (https://github.com/toml-lang/toml)
-# See project for more information: https://github.com/bryanklewis/prometheus-eventhubs-adapter
-#
-# All settings are #commented out, uncomment settings you want to define.
+## prometheus-eventhubs-adapter
+## Settings file in TOML (https://github.com/toml-lang/toml)
+## See project for more information: https://github.com/bryanklewis/prometheus-eventhubs-adapter
+##
+## All settings are #commented out, uncomment settings you want to define.
 
-# -------------------- Adapter --------------------
+## -------------------- Adapter --------------------
 #connection_timeout = "5s" # Units: "ns", "ms", "s", "m", "h"
 #listen_address = ":9201"
 #write_path = "/write"
 #telemetry_path = "/metrics"
 #log_level = "info"
 
-# -------------------- Event Hub Writer --------------------
+## -------------------- Event Hub Writer --------------------
 #write_batch = true
 #write_serializer = "json"

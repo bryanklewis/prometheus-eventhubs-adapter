@@ -26,7 +26,6 @@ package main
 */
 
 import (
-	"github.com/spf13/viper"
 	"context"
 	"io/ioutil"
 	"net/http"
@@ -35,11 +34,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gogo/protobuf/proto"
 	"github.com/golang/snappy"
-
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	io_prometheus_client "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/prompb"
+	"github.com/spf13/viper"
 
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/log"
 )
@@ -61,8 +61,8 @@ func main() {
 	initConfig()
 	configLogging()
 
-	//writer := hub.NewClient(hubCfg)
-	//log.Info().Str("write-encoding", hubCfg.Serializer.ADXFormat()).Msg("created event hub writer")
+	//writer := hub.NewClient()
+	//log.Info().Msg("created event hub writer")
 
 	// Set GIN_MODE
 	if e := log.Debug(); e.Enabled() {
@@ -77,53 +77,53 @@ func main() {
 	// Global handler
 	router.Use(logHandler([]string{viper.GetString("telemetry_path")}), gin.Recovery())
 
-	/*// Route handlers
-	router.POST(viper.GetString("write_path"), timeHandler("write"), writeHandler(writer))
+	// Route handlers
+	//router.POST(viper.GetString("write_path"), timeHandler("write"), writeHandler(writer))
 	router.GET(viper.GetString("telemetry_path"), gin.WrapH(promhttp.Handler()))
-
-	// HTTP server
-	srv := &http.Server{
-		Addr:         appCfg.ListenAddr,
-		Handler:      router,
-		ReadTimeout:  appCfg.RemoteTimeout,
-		WriteTimeout: appCfg.RemoteTimeout,
-	}
-
-	log.Info().Msgf("listening and serving HTTP on %s", srv.Addr)
-	go func() {
-		// serve connections
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatal().Err(err).Msg("server listen error")
+	/*
+		// HTTP server
+		srv := &http.Server{
+			Addr:         viper.GetString("listen_address"),
+			Handler:      router,
+			ReadTimeout:  viper.GetDuration("connection_timeout"),
+			WriteTimeout: viper.GetDuration("connection_timeout"),
 		}
-	}()
 
-	// Wait for interrupt signal to gracefully shutdown the server with
-	// a timeout of 5 seconds.
-	quit := make(chan os.Signal, 1)
+		log.Info().Msgf("listening and serving HTTP on %s", srv.Addr)
+		go func() {
+			// serve connections
+			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				log.Fatal().Err(err).Msg("server listen error")
+			}
+		}()
 
-	// Send incomming quit signals to channel
-	// kill (no param) default send syscanll.SIGTERM
-	// kill -2 is syscall.SIGINT
-	// kill -9 is syscall. SIGKILL but can"t be catch, so don't need add it
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+		// Wait for interrupt signal to gracefully shutdown the server with
+		// a timeout of 5 seconds.
+		quit := make(chan os.Signal, 1)
 
-	// Block until we receive a signal on the channel
-	<-quit
+		// Send incomming quit signals to channel
+		// kill (no param) default send syscanll.SIGTERM
+		// kill -2 is syscall.SIGINT
+		// kill -9 is syscall. SIGKILL but can"t be catch, so don't need add it
+		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 
-	log.Info().Msg("received shutdown signal")
+		// Block until we receive a signal on the channel
+		<-quit
 
-	ctx, cancel := context.WithTimeout(context.Background(), (appCfg.RemoteTimeout + (3 * time.Second)))
-	defer cancel()
+		log.Info().Msg("received shutdown signal")
 
-	// Shutdown HTTP server
-	if err := srv.Shutdown(ctx); err != nil {
-		log.Error().Err(err).Msg("server shutdown error")
-	}
+		ctx, cancel := context.WithTimeout(context.Background(), (viper.GetDuration("connection_timeout") + (2 * time.Second)))
+		defer cancel()
 
-	// Close event hub client
-	if err := writer.Hub.Close(ctx); err != nil {
-		log.Error().Err(err).Msg("close event hub error")
-	}*/
+		// Shutdown HTTP server
+		if err := srv.Shutdown(ctx); err != nil {
+			log.Error().Err(err).Msg("server shutdown error")
+		}
+
+		// Close event hub client
+		if err := writer.Hub.Close(ctx); err != nil {
+			log.Error().Err(err).Msg("close event hub error")
+		}*/
 
 	log.Info().Str("version", Version).Str("commit", Commit).Str("build", Build).Msgf("%s exiting", AppName)
 }
