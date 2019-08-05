@@ -27,8 +27,10 @@ package log
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -163,4 +165,29 @@ func Printf(format string, v ...interface{}) {
 // is associated, a disabled logger is returned.
 func Ctx(ctx context.Context) *zerolog.Logger {
 	return zerolog.Ctx(ctx)
+}
+
+// SetLevel converts a level string into a zerolog Level value and
+// sets the Global Level to the parsed level.
+// returns an error if the input string does not match known values.
+func SetLevel(levelStr string) error {
+	switch strings.ToLower(levelStr) {
+	case "debug":
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	case "info":
+		zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	case "warn":
+		zerolog.SetGlobalLevel(zerolog.WarnLevel)
+	case "error":
+		zerolog.SetGlobalLevel(zerolog.ErrorLevel)
+	case "fatal":
+		zerolog.SetGlobalLevel(zerolog.FatalLevel)
+	case "panic":
+		zerolog.SetGlobalLevel(zerolog.PanicLevel)
+	case "none":
+		zerolog.SetGlobalLevel(zerolog.Disabled)
+	default:
+		return fmt.Errorf("Unknown Level String: '%s'", strings.ToLower(levelStr))
+	}
+	return nil
 }

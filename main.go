@@ -26,6 +26,7 @@ package main
 */
 
 import (
+	"github.com/spf13/viper"
 	"context"
 	"io/ioutil"
 	"net/http"
@@ -57,10 +58,11 @@ var (
 
 func main() {
 	log.Info().Str("version", Version).Str("commit", Commit).Str("build", Build).Msgf("%s starting", AppName)
-	newConfig()
+	initConfig()
+	configLogging()
 
-	/*writer := hub.NewClient(hubCfg)
-	log.Info().Str("write-encoding", hubCfg.Serializer.ADXFormat()).Msg("created event hub writer")
+	//writer := hub.NewClient(hubCfg)
+	//log.Info().Str("write-encoding", hubCfg.Serializer.ADXFormat()).Msg("created event hub writer")
 
 	// Set GIN_MODE
 	if e := log.Debug(); e.Enabled() {
@@ -73,11 +75,11 @@ func main() {
 	router := gin.New()
 
 	// Global handler
-	router.Use(logHandler([]string{appCfg.TelemetryPath}), gin.Recovery())
+	router.Use(logHandler([]string{viper.GetString("telemetry_path")}), gin.Recovery())
 
-	// Route handlers
-	router.POST(appCfg.WritePath, timeHandler("write"), writeHandler(writer))
-	router.GET(appCfg.TelemetryPath, gin.WrapH(promhttp.Handler()))
+	/*// Route handlers
+	router.POST(viper.GetString("write_path"), timeHandler("write"), writeHandler(writer))
+	router.GET(viper.GetString("telemetry_path"), gin.WrapH(promhttp.Handler()))
 
 	// HTTP server
 	srv := &http.Server{

@@ -102,8 +102,8 @@ func parseFlags() {
 	viper.SetDefault("write_serializer", "json")
 }
 
-// newConfig initializes configuration setup
-func newConfig() {
+// initConfig initializes configuration setup
+func initConfig() {
 	// Config file
 	viper.SetConfigName(AppName)
 	viper.SetConfigType("toml")
@@ -159,6 +159,14 @@ func newConfig() {
 	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
 	pflag.Parse()
 	viper.BindPFlags(pflag.CommandLine)
+}
+
+// configLogging configures logging
+func configLogging() {
+	// Set global logging preference
+	if err := log.SetLevel(viper.GetString("log_level")); err != nil {
+		log.ErrorObj(err).Msg("Invalid log level provided")
+	}
 
 	// Show config when debugging
 	debugConfig := viper.AllSettings()
