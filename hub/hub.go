@@ -122,8 +122,9 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 
 // Close shuts down an any active connections
 func (c *EventHubClient) Close(ctx context.Context) error {
-	c.hub.Close(ctx)
-
+	if err := c.hub.Close(ctx); err != nil {
+		return err
+	}
 	return nil
 }
 

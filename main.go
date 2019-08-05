@@ -206,7 +206,7 @@ func logHandler(skipPaths ...[]string) gin.HandlerFunc {
 //
 // To allow tracking of different routes, timeHandler is intentionally not set
 // in the global gin router.Use(). Instead, each route exposed with router.VERB
-// should list this middleware first, then the desired application handler.
+// should list this middleware first and then the desired application handler.
 // Uses Prometheus histogram to track time.
 func timeHandler(path string) gin.HandlerFunc {
 	return func(c *gin.Context) {
