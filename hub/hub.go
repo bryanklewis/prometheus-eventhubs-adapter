@@ -25,8 +25,7 @@ import (
 	"github.com/Azure/azure-amqp-common-go/v2/sas"
 	eventhub "github.com/Azure/azure-event-hubs-go/v2"
 	"github.com/Azure/go-autorest/autorest/azure"
-
-	//"github.com/prometheus/common/model"
+	"github.com/prometheus/common/model"
 
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/log"
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/serializers"
@@ -52,7 +51,7 @@ type EventHubConfig struct {
 
 // EventHubClient sends Prometheus samples to Event Hubs
 type EventHubClient struct {
-	Hub           *eventhub.Hub
+	hub           *eventhub.Hub
 	runtimeInfo   *eventhub.HubRuntimeInformation
 	batch         bool
 	batchMaxBytes int
@@ -80,7 +79,7 @@ func NewClient(cfg *EventHubConfig) (*EventHubClient, error) {
 	}
 
 	client := &EventHubClient{
-		Hub:           hb,
+		hub:           hb,
 		runtimeInfo:   rt,
 		adxMapping:    cfg.ADXMapping,
 		batch:         cfg.Batch,
@@ -89,6 +88,43 @@ func NewClient(cfg *EventHubConfig) (*EventHubClient, error) {
 	}
 
 	return client, nil
+}
+
+// Write creates and sends events from metric samples
+func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error {
+	begin := time.Now()
+
+	/*byteSamples, err := serialize.Serialize(*c.Serializer, samples)
+	if err != nil {
+		return err
+	}
+
+	for _, sample := range byteSamples {
+		event := eventhub.NewEvent(sample.Payload)
+		event.Properties = map[string]interface{}{
+			"Table":                     sample.Name,
+			"Format":                    serialize.Serializer.ADXFormat(*c.Serializer),
+			"IngestionMappingReference": c.adxMapping,
+		}
+
+		err := c.hub.Send(ctx, event)
+		if err != nil {
+			// TODO: log and move on or return on first error?
+			log.ErrorObj(err).Msg("failed to send event")
+		}
+	}*/
+
+	duration := time.Since(begin).Seconds()
+	log.Debug().Int("count", len(samples)).Float64("duration_sec", duration).Msg("Wrote samples")
+
+	return nil
+}
+
+// Close shuts down an any active connections
+func (c *EventHubClient) Close(ctx context.Context) error {
+	c.hub.Close(ctx)
+
+	return nil
 }
 
 // Name identifies the client path

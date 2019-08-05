@@ -29,6 +29,9 @@ import (
 	"context"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -62,7 +65,7 @@ func main() {
 	initConfig()
 	configLogging()
 
-	writer, err := hub.NewClient(getWriterConfig())
+	writeHub, err := hub.NewClient(getWriterConfig())
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to create event hub connection")
 	}
@@ -81,52 +84,52 @@ func main() {
 	router.Use(logHandler([]string{viper.GetString("telemetry_path")}), gin.Recovery())
 
 	// Route handlers
-	router.POST(viper.GetString("write_path"), timeHandler("write"), writeHandler(writer))
+	router.POST(viper.GetString("write_path"), timeHandler("write"), writeHandler(writeHub))
 	router.GET(viper.GetString("telemetry_path"), gin.WrapH(promhttp.Handler()))
-	/*
-		// HTTP server
-		srv := &http.Server{
-			Addr:         viper.GetString("listen_address"),
-			Handler:      router,
-			ReadTimeout:  viper.GetDuration("connection_timeout"),
-			WriteTimeout: viper.GetDuration("connection_timeout"),
+
+	// HTTP server
+	srv := &http.Server{
+		Addr:         viper.GetString("listen_address"),
+		Handler:      router,
+		ReadTimeout:  viper.GetDuration("connection_timeout"),
+		WriteTimeout: viper.GetDuration("connection_timeout"),
+	}
+
+	log.Info().Msgf("listening and serving HTTP on %s", srv.Addr)
+	go func() {
+		// serve connections
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatal().Err(err).Msg("server listen error")
 		}
+	}()
 
-		log.Info().Msgf("listening and serving HTTP on %s", srv.Addr)
-		go func() {
-			// serve connections
-			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-				log.Fatal().Err(err).Msg("server listen error")
-			}
-		}()
+	// Wait for interrupt signal to gracefully shutdown the server with
+	// a timeout of 5 seconds.
+	quit := make(chan os.Signal, 1)
 
-		// Wait for interrupt signal to gracefully shutdown the server with
-		// a timeout of 5 seconds.
-		quit := make(chan os.Signal, 1)
+	// Send incomming quit signals to channel
+	// kill (no param) default send syscanll.SIGTERM
+	// kill -2 is syscall.SIGINT
+	// kill -9 is syscall. SIGKILL but can"t be catch, so don't need add it
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 
-		// Send incomming quit signals to channel
-		// kill (no param) default send syscanll.SIGTERM
-		// kill -2 is syscall.SIGINT
-		// kill -9 is syscall. SIGKILL but can"t be catch, so don't need add it
-		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	// Block until we receive a signal on the channel
+	<-quit
 
-		// Block until we receive a signal on the channel
-		<-quit
+	log.Info().Msg("received shutdown signal")
 
-		log.Info().Msg("received shutdown signal")
+	ctx, cancel := context.WithTimeout(context.Background(), (viper.GetDuration("connection_timeout") * 2))
+	defer cancel()
 
-		ctx, cancel := context.WithTimeout(context.Background(), (viper.GetDuration("connection_timeout") + (2 * time.Second)))
-		defer cancel()
+	// Shutdown HTTP server
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Error().Err(err).Msg("server shutdown error")
+	}
 
-		// Shutdown HTTP server
-		if err := srv.Shutdown(ctx); err != nil {
-			log.Error().Err(err).Msg("server shutdown error")
-		}
-
-		// Close event hub client
-		if err := writer.Hub.Close(ctx); err != nil {
-			log.Error().Err(err).Msg("close event hub error")
-		}*/
+	// Close event hub client
+	if err := writeHub.Close(ctx); err != nil {
+		log.Error().Err(err).Msg("event hub close error")
+	}
 
 	log.Info().Str("version", Version).Str("commit", Commit).Str("build", Build).Msgf("%s exiting", AppName)
 }
@@ -134,6 +137,7 @@ func main() {
 type writer interface {
 	Write(ctx context.Context, samples model.Samples) error
 	Name() string
+	Close(ctx context.Context) error
 }
 
 // logHandler initializes a gin logging middleware.
@@ -216,7 +220,7 @@ func timeHandler(path string) gin.HandlerFunc {
 }
 
 // writeHandler send to Event Hubs
-func writeHandler(writer *hub.EventHubClient) func(c *gin.Context) {
+func writeHandler(w writer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		httpRequestsTotal.Add(float64(1))
 
@@ -247,15 +251,15 @@ func writeHandler(writer *hub.EventHubClient) func(c *gin.Context) {
 		//ctx, cancel := context.WithCancel(c)
 		//defer cancel()
 
-		/*if err := sendSamples(ctx, writer, samples); err != nil {
+		/*if err := sendSamples(ctx, w, samples); err != nil {
 			c.AbortWithStatus(http.StatusInternalServerError)
 			log.ErrorObj(err).Int("num_samples", len(samples)).Msg("Error sending samples to remote storage")
 			return
 		}*/
 
-		counter, err := sentSamples.GetMetricWithLabelValues(writer.Name())
+		counter, err := sentSamples.GetMetricWithLabelValues(w.Name())
 		if err != nil {
-			log.ErrorObj(err).Str("labelValue", writer.Name()).Msg("Couldn't get a counter")
+			log.ErrorObj(err).Str("labelValue", w.Name()).Msg("Couldn't get a counter")
 		}
 		writeThroughput.SetCurrent(getCounterValue(counter))
 
