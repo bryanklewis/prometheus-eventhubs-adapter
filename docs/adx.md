@@ -7,10 +7,6 @@ Consuming events from an Event Hub into Azure Data Explorer.
 * Ingest overview: https://docs.microsoft.com/en-us/azure/data-explorer/ingest-data-overview
 * How-to guides: https://docs.microsoft.com/en-us/azure/data-explorer/ingest-data-event-hub
 
-## Architecture
-
-image
-
 ## Single Event
 
 Single events can be tagged with user properties for [Azure Data Explorer](https://docs.microsoft.com/en-us/azure/data-explorer/ingest-data-event-hub) (ADX) dynamic routing. Dynamic routing enables events read from a single Event Hub to land in different tables in your Kusto cluster.
@@ -35,4 +31,15 @@ event.Properties = map[string]interface{}{
 	"IngestionMappingReference": "promMap",
 }
 ```
+
+### Architecture
+
+![alt text](./images/adx-single-arch.png "Single Event Architecture")
+
 ## Batch Events
+
+Batch events share a common event.Properties bag. Assigning individual values for ADX dynamic routing is not possible. Instead, bulk written events can be processed to a second Event Hub using Azure Stream Analytics. The processed events can then be consumed by the ADX cluster.
+
+### Architecture
+
+![alt text](./images/adx-batch-arch.png "Batch Event Architecture")
