@@ -103,31 +103,52 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 	}
 
 	begin := time.Now()
-	
-	for _, sample := range samples {
-		var metricName model.LabelValue
-		var hasName bool
-		metricName, hasName = sample.Metric[model.MetricNameLabel]
-		if !hasName {
-			metricName = defaultMetricName
-		}
-		
-		values, err := c.serializer.Serialize(*sample)
-		if err != nil {
-			log.ErrorObj(err).Msg("Could not serialize sample")
-			continue
+
+	if c.batch {
+		// Batch Events
+		batchOptions := eventhub.BatchWithMaxSizeInBytes(c.batchMaxBytes)
+
+		for _, sample := range samples {
+			serializedEvent, err := c.serializer.Serialize(*sample)
+			if err != nil {
+				log.ErrorObj(err).Msg("Could not serialize sample")
+				continue
+			}
+
+			result, err := events.Add(eventhub.NewEvent(serializedEvent))
 		}
 
-		event := eventhub.NewEvent(values)
-		event.Properties = map[string]interface{}{
-			"Table":                     string(metricName),
-			"Format":                    c.serializer.ADXFormat().String(),
-			"IngestionMappingReference": c.adxMapping,
+		// Final send
+		if err := c.hub.Send(ctx, events, batchOptions); err != nil {
+			//log.ErrorObj(err).Msg("send event batch failed")
 		}
+	} else {
+		// Single Event
+		for _, sample := range samples {
+			var metricName model.LabelValue
+			var hasName bool
+			metricName, hasName = sample.Metric[model.MetricNameLabel]
+			if !hasName {
+				metricName = defaultMetricName
+			}
 
-		if err := c.hub.Send(ctx, event); err != nil {
-			log.ErrorObj(err).Msg("send event failed")
-			continue
+			serializedEvent, err := c.serializer.Serialize(*sample)
+			if err != nil {
+				log.ErrorObj(err).Msg("Could not serialize sample")
+				continue
+			}
+
+			event := eventhub.NewEvent(serializedEvent)
+			event.Properties = map[string]interface{}{
+				"Table":                     string(metricName),
+				"Format":                    c.serializer.ADXFormat().String(),
+				"IngestionMappingReference": c.adxMapping,
+			}
+
+			if err := c.hub.Send(ctx, event); err != nil {
+				log.ErrorObj(err).Msg("send event failed")
+				continue
+			}
 		}
 	}
 
