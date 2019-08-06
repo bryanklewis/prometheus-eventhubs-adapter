@@ -7,7 +7,7 @@
 
 ![alt text](./docs/images/adapter-arch.png "Adapter Architecture")
 
-This adapter has settings to help enable consumption of events from Azure Data Explorer (Kusto). Additional information on using ADX with events written by this adapter is in [docs/adx.md](./docs/adx.md)
+Additional information on using Azure Data Explorer (Kusto) with events written by this adapter is in [docs/adx.md](./docs/adx.md)
 
 ## Configuration
 
