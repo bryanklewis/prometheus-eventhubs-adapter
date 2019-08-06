@@ -92,30 +92,36 @@ func NewClient(cfg *EventHubConfig) (*EventHubClient, error) {
 
 // Write creates and sends events from metric samples
 func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error {
-	begin := time.Now()
-
-	/*byteSamples, err := serialize.Serialize(*c.Serializer, samples)
-	if err != nil {
-		return err
+	// Stop processing if empty
+	if len(samples) == 0 {
+		return nil
 	}
 
-	for _, sample := range byteSamples {
-		event := eventhub.NewEvent(sample.Payload)
+	begin := time.Now()
+
+	for _, sample := range samples {
+		values, err := c.serializer.Serialize(*sample)
+		if err != nil {
+			log.ErrorObj(err).Msg("Could not serialize sample; sample will be skipped")
+			continue
+		}
+
+		event := eventhub.NewEvent(values)
 		event.Properties = map[string]interface{}{
-			"Table":                     sample.Name,
-			"Format":                    serialize.Serializer.ADXFormat(*c.Serializer),
+			//"Table":                     sample.,
+			"Format":                    c.serializer.ADXFormat().String(),
 			"IngestionMappingReference": c.adxMapping,
 		}
 
-		err := c.hub.Send(ctx, event)
-		if err != nil {
+		if err := c.hub.Send(ctx, event); err != nil {
 			// TODO: log and move on or return on first error?
-			log.ErrorObj(err).Msg("failed to send event")
+			log.ErrorObj(err).Msg("send event failed; event will be skipped")
+			continue
 		}
-	}*/
+	}
 
 	duration := time.Since(begin).Seconds()
-	log.Debug().Int("count", len(samples)).Float64("duration_sec", duration).Msg("Wrote samples")
+	log.Debug().Int("count", len(samples)).Float64("duration_sec", duration).Msg("Wrote samples as single events")
 
 	return nil
 }
