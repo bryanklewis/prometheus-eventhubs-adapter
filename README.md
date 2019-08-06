@@ -13,9 +13,9 @@ This adapter contains settings to help enable consumption of events from Azure D
 
 Adapter configuration can be set using any of the available methods. Configuration is returned using the following precedence order. Each item takes precedence over the item below it:
 
-* [Commandline Flags](###Commandline-Flags)
-* [Environment Variables](###Environment-Variables)
-* [TOML File](###TOML-File)
+* [Commandline Flags](#commandline-flags)
+* [Environment Variables](#environment-variables)
+* [TOML File](#toml-file)
 * *Default*
 
 ### Commandline Flags
@@ -38,8 +38,8 @@ Adapter configuration can be set using any of the available methods. Configurati
 - `write_batch` send samples in batches (true) or as single events (false). *Default true*
 - `write_maxbytes` the maximum number of bytes in an event or batch. See [Event Hubs Limits](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-quotas). Maximum allowed value is 1000000 bytes but a value less than max is used to account for headroom needed when writing the event. *Default 986000*
 - `write_serializer` the path for telemetry scraps. *Default /metrics*
-  - [json](###JSON)
-  - [avro-json](###Avro-JSON)
+  - [json](#json)
+  - [avro-json](#avro-json)
 - `write_adxmapping` the name of the Azure Data Explorer (ADX or Kusto) mapping used for Schema column mapping of events during data injestion to an ADX cluster. *Default promMap*
 
 #### Event Hub (Write)
@@ -58,7 +58,7 @@ There are two sets of environment variables which can produce a SAS TokenProvide
     - `write_keyvalue` the secret for the Event Hub key named in `write_keyname`
 
 2. Expected Environment Variable:
-    - `write_connstring` connection string from the Azure portal like: `Endpoint=sb://foo.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=fluffypuppy;EntityPath=hubName`
+    - `write_connstring` connection string from the Azure portal like: `Endpoint=sb://foo.servicebus.windows.net/;SharedAccessKeyName=MySendKey;SharedAccessKey=fluffypuppy;EntityPath=hubName`
 
 #### Event Hub (Write) AAD TokenProvider
 
@@ -173,8 +173,8 @@ go build
 
 ## License
 
-Copyright 2019 Micron Technology, Inc. All rights reserved. Licensed under the [Apache 2.0](https://github.com/bryanklewis/prometheus-eventhubs-adapter/blob/master/LICENSE) license.
+Copyright 2019 Micron Technology, Inc. All rights reserved. Licensed under the [Apache 2.0](./LICENSE) license.
 
 ### Third Party Dependencies
 
-Third party code and dependencies are copyright of their respective owners. See [NOTICE](https://github.com/bryanklewis/prometheus-eventhubs-adapter/blob/master/NOTICE) for additional information.
+Third party code and dependencies are copyright of their respective owners. See [NOTICE](./NOTICE) for additional information.

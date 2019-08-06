@@ -28,10 +28,10 @@
 
 ## Event Hub
 #write_namespace = "foo" # Required
-#write_hub = "bar" # Required
+#write_hub = "hubName" # Required
 
 ## SAS TokenProvider with Connection String
-#write_connstring = "Endpoint=sb://foo.servicebus.windows.net/;SharedAccessKeyName=MySendKey;SharedAccessKey=fluffypuppy;EntityPath=bar"
+#write_connstring = "Endpoint=sb://foo.servicebus.windows.net/;SharedAccessKeyName=MySendKey;SharedAccessKey=fluffypuppy;EntityPath=hubName"
 
 ## SAS TokenProvider with Key
 #write_keyname = "MySendKey"
