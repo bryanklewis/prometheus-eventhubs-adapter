@@ -40,7 +40,7 @@ Adapter configuration can be set using any of the available methods. Configurati
 - `write_serializer` the path for telemetry scraps. *Default /metrics*
   - [json](#json)
   - [avro-json](#avro-json)
-- `write_adxmapping` the name of the Azure Data Explorer (ADX or Kusto) mapping used for Schema column mapping of events during data injestion to an ADX cluster. *Default promMap*
+- `write_adxmapping` the name of the Azure Data Explorer (ADX or Kusto) mapping used for Schema column mapping of events during [data injestion](./docs/adx.md) to an ADX cluster. *Default promMap*
 
 #### Event Hub (Write)
 
