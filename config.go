@@ -34,12 +34,13 @@ import (
 
 // config represents settings for the application
 type config struct {
-	connectionTimeout time.Duration
-	listenAddress     string
-	writePath         string
-	telemetryPath     string
-	logLevel          string
-	writeHub          hub.EventHubConfig
+	readTimeout   time.Duration
+	writeTimeout  time.Duration
+	listenAddress string
+	writePath     string
+	telemetryPath string
+	logLevel      string
+	writeHub      hub.EventHubConfig
 }
 
 var (
@@ -49,8 +50,11 @@ var (
 // parseFlags parses the adapter configuration flags
 func parseFlags() {
 	// Main application
-	flag.DurationVar(&adapterConfig.connectionTimeout, "connection_timeout", 5*time.Second, "The timeout to use when sending samples to the remote storage.")
-	viper.SetDefault("connection_timeout", 5*time.Second)
+	flag.DurationVar(&adapterConfig.readTimeout, "read_timeout", 5*time.Second, "HTTP server time from when the connection is accepted to when the request body is fully read.")
+	viper.SetDefault("read_timeout", 5*time.Second)
+
+	flag.DurationVar(&adapterConfig.writeTimeout, "write_timeout", 10*time.Second, "HTTP server time from the end of the request header read to the end of the response write.")
+	viper.SetDefault("write_timeout", 10*time.Second)
 
 	flag.StringVar(&adapterConfig.listenAddress, "listen_address", ":9201", "Address to listen on for web endpoints.")
 	viper.SetDefault("listen_address", ":9201")

@@ -10,7 +10,8 @@ This project adheres to [Semantic Versioning]( https://semver.org/ ).
 ### Removed
 ### Fixed
 
-## 0.1.0-preview - TBD July 2019
+## 0.1.0 - 06 August 2019
 ### Added
+- Batch events
 - Azure Pipeline config
-- Preparing public release
+- Public release

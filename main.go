@@ -21,7 +21,6 @@ package main
   ---------------------------------------------------
   Copyright 2017 The Prometheus Authors, Apache License 2.0
   Copyright 2019 Timescale, Inc., Apache License 2.0
-  Copyright 2018 Telefónica, Apache License 2.0
   Copyright 2018 gin-contrib, MIT License
 */
 
@@ -80,6 +79,7 @@ func main() {
 	router := gin.New()
 
 	// Global handler
+	// An array of paths to exclude from logging is passed to the handler
 	router.Use(logHandler([]string{viper.GetString("telemetry_path")}), gin.Recovery())
 
 	// Route handlers
@@ -90,8 +90,8 @@ func main() {
 	srv := &http.Server{
 		Addr:         viper.GetString("listen_address"),
 		Handler:      router,
-		ReadTimeout:  viper.GetDuration("connection_timeout"),
-		WriteTimeout: viper.GetDuration("connection_timeout"),
+		ReadTimeout:  viper.GetDuration("read_timeout"),
+		WriteTimeout: viper.GetDuration("write_timeout"),
 	}
 
 	log.Info().Msgf("listening and serving HTTP on %s", srv.Addr)
@@ -103,7 +103,7 @@ func main() {
 	}()
 
 	// Wait for interrupt signal to gracefully shutdown the server with
-	// a timeout of 5 seconds.
+	// a timeout context.
 	quit := make(chan os.Signal, 1)
 
 	// Send incomming quit signals to channel
@@ -117,7 +117,7 @@ func main() {
 
 	log.Info().Msg("received shutdown signal")
 
-	ctx, cancel := context.WithTimeout(context.Background(), (viper.GetDuration("connection_timeout") * 2))
+	ctx, cancel := context.WithTimeout(context.Background(), (viper.GetDuration("write_timeout") + viper.GetDuration("read_timeout")))
 	defer cancel()
 
 	// Shutdown HTTP server
