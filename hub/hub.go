@@ -103,7 +103,7 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 	}
 
 	begin := time.Now()
-
+	
 	for _, sample := range samples {
 		var metricName model.LabelValue
 		var hasName bool
