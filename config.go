@@ -166,6 +166,9 @@ func initConfig() {
 	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
 	pflag.Parse()
 	viper.BindPFlags(pflag.CommandLine)
+
+	// Auto-config
+	configLogging()
 }
 
 // configLogging configures logging

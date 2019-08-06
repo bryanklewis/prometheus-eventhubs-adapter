@@ -63,7 +63,6 @@ var (
 func main() {
 	log.Info().Str("version", Version).Str("commit", Commit).Str("build", Build).Msgf("%s starting", AppName)
 	initConfig()
-	configLogging()
 
 	writeHub, err := hub.NewClient(getWriterConfig())
 	if err != nil {
