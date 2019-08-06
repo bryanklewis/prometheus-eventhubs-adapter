@@ -31,6 +31,11 @@ import (
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/serializers"
 )
 
+const (
+	defaultMetricName model.LabelValue = "no_name"
+	defaultNaNValue   float64          = 0
+)
+
 // EventHubConfig for an Event Hub
 type EventHubConfig struct {
 	Namespace     string
@@ -100,22 +105,28 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 	begin := time.Now()
 
 	for _, sample := range samples {
+		var metricName model.LabelValue
+		var hasName bool
+		metricName, hasName = sample.Metric[model.MetricNameLabel]
+		if !hasName {
+			metricName = defaultMetricName
+		}
+		
 		values, err := c.serializer.Serialize(*sample)
 		if err != nil {
-			log.ErrorObj(err).Msg("Could not serialize sample; sample will be skipped")
+			log.ErrorObj(err).Msg("Could not serialize sample")
 			continue
 		}
 
 		event := eventhub.NewEvent(values)
 		event.Properties = map[string]interface{}{
-			//"Table":                     sample.,
+			"Table":                     string(metricName),
 			"Format":                    c.serializer.ADXFormat().String(),
 			"IngestionMappingReference": c.adxMapping,
 		}
 
 		if err := c.hub.Send(ctx, event); err != nil {
-			// TODO: log and move on or return on first error?
-			log.ErrorObj(err).Msg("send event failed; event will be skipped")
+			log.ErrorObj(err).Msg("send event failed")
 			continue
 		}
 	}
