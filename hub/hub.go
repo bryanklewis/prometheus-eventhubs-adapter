@@ -23,7 +23,6 @@ import (
 
 	"github.com/Azure/azure-amqp-common-go/v2/aad"
 	"github.com/Azure/azure-amqp-common-go/v2/sas"
-	"github.com/Azure/azure-amqp-common-go/v2/uuid"
 	eventhub "github.com/Azure/azure-event-hubs-go/v2"
 	"github.com/Azure/go-autorest/autorest/azure"
 	"github.com/prometheus/common/model"
@@ -107,9 +106,7 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 
 	if c.batch {
 		// Batch Events
-		events := eventhub.NewEventBatch(newUUID(), &eventhub.BatchOptions{
-			MaxSize: eventhub.MaxMessageSizeInBytes(c.batchMaxBytes),
-		})
+		events := make([]*eventhub.Event, len(samples))
 
 		for _, sample := range samples {
 			serializedEvent, err := c.serializer.Serialize(*sample)
@@ -118,30 +115,17 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 				continue
 			}
 
-			result, err := events.Add(eventhub.NewEvent(serializedEvent))
-
-			if !result {
-				log.Debug().Err(err).Msg("cannot add to batch, sending current batch")
-				
-				// Send batch
-				if err := c.hub.Send(ctx, events.Event); err != nil {
-					log.ErrorObj(err).Msg("send event batch failed")
-				}
-
-				// Reset batch
-				events.Clear()
-
-				// Add to new batch
-				if _, err := events.Add(eventhub.NewEvent(serializedEvent)); err != nil {
-					log.Debug().Err(err).Msg("add to batch failed")
-				}
+			event := eventhub.NewEvent(serializedEvent)
+			if err := c.hub.Send(ctx, event); err != nil {
+				log.ErrorObj(err).Msg("send event failed")
+				continue
 			}
+
+			events = append(events, event)
 		}
 
-		// Final send
-		if err := c.hub.Send(ctx, events.Event); err != nil {
-			log.ErrorObj(err).Msg("send event batch failed")
-		}
+		
+
 	} else {
 		// Single Event
 		for _, sample := range samples {
@@ -176,17 +160,6 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 	log.Debug().Int("count", len(samples)).Float64("duration_sec", duration).Msg("Wrote samples as single events")
 
 	return nil
-}
-
-// newUUID returns a new UUID
-func newUUID() string {
-	ID, err := uuid.NewV4()
-	if err != nil {
-		log.ErrorObj(err).Msg("Could not generate a new batch id")
-		return ""
-	}
-
-	return ID.String()
 }
 
 // Close shuts down an any active connections

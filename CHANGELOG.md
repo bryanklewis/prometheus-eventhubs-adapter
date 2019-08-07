@@ -10,8 +10,18 @@ This project adheres to [Semantic Versioning]( https://semver.org/ ).
 ### Removed
 ### Fixed
 
-## 0.3.0 - 07 August 2019
+## v0.3.0 - 07 August 2019
 ### Added
-- Batch events
-- Azure Pipeline config
 - Public release
+- Batch events send
+- Azure Pipelines config
+
+## v0.2.0 - 26 July 2019
+### Added
+- Avro JSON
+### Changed
+- Use viper library for config
+
+## v0.1.0 - 12 July 2019
+### Added
+- Adapter created
