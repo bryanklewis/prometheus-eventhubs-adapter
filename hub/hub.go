@@ -107,13 +107,7 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 
 	if c.batch {
 		// Batch Events
-		batchID, err := uuid.NewV4()
-		if err != nil {
-			log.Debug().Err(err).Msg("Could not generate a new batch id")
-			return err
-		}
-
-		events := eventhub.NewEventBatch(batchID.String(), &eventhub.BatchOptions{
+		events := eventhub.NewEventBatch(newUUID(), &eventhub.BatchOptions{
 			MaxSize: eventhub.MaxMessageSizeInBytes(c.batchMaxBytes),
 		})
 
@@ -127,8 +121,20 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 			result, err := events.Add(eventhub.NewEvent(serializedEvent))
 
 			if !result {
-				//
-				events.ID = 
+				log.Debug().Err(err).Msg("cannot add to batch, sending current batch")
+				
+				// Send batch
+				if err := c.hub.Send(ctx, events.Event); err != nil {
+					log.ErrorObj(err).Msg("send event batch failed")
+				}
+
+				// Reset batch
+				events.Clear()
+
+				// Add to new batch
+				if _, err := events.Add(eventhub.NewEvent(serializedEvent)); err != nil {
+					log.Debug().Err(err).Msg("add to batch failed")
+				}
 			}
 		}
 
@@ -170,6 +176,17 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 	log.Debug().Int("count", len(samples)).Float64("duration_sec", duration).Msg("Wrote samples as single events")
 
 	return nil
+}
+
+// newUUID returns a new UUID
+func newUUID() string {
+	ID, err := uuid.NewV4()
+	if err != nil {
+		log.ErrorObj(err).Msg("Could not generate a new batch id")
+		return ""
+	}
+
+	return ID.String()
 }
 
 // Close shuts down an any active connections
