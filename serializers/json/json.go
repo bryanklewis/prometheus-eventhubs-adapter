@@ -18,18 +18,15 @@ package json
 
 import (
 	"encoding/json"
-	"math"
 	"time"
 
 	"github.com/prometheus/common/model"
 
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/kusto"
-	"github.com/bryanklewis/prometheus-eventhubs-adapter/log"
 )
 
 const (
 	defaultMetricName model.LabelValue = "no_name"
-	defaultNaNValue   float64          = 0
 )
 
 // Serializer represents a serializer instance
@@ -64,13 +61,6 @@ func (s *Serializer) createObject(sample model.Sample) map[string]interface{} {
 	if !hasName {
 		numLabels = len(sample.Metric)
 		metricName = defaultMetricName
-	}
-
-	// Convert un-supported float64 NaN to a default value
-	var sampleValue float64 = float64(sample.Value)
-	if math.IsNaN(sampleValue) {
-		sampleValue = defaultNaNValue
-		log.Warn().Str("sample_name", string(metricName)).Msg("Sample value float64 NaN not supported")
 	}
 
 	// Remove sample name from labels set

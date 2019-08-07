@@ -27,6 +27,7 @@ package main
 import (
 	"context"
 	"io/ioutil"
+	"math"
 	"net/http"
 	"os"
 	"os/signal"
@@ -49,7 +50,8 @@ import (
 
 const (
 	// AppName is the application name. Value is static and will not change.
-	AppName = "prometheus-eventhubs-adapter"
+	AppName                 = "prometheus-eventhubs-adapter"
+	defaultNaNValue float64 = 0
 )
 
 // Build information. Populated at compile-time using -ldflags "-X main.BUILD=value"
@@ -289,9 +291,16 @@ func protoToSamples(req *prompb.WriteRequest) model.Samples {
 		}
 
 		for _, s := range ts.Samples {
+			// Convert sample value float64:NaN to a default value
+			tempValue := s.GetValue()
+			if math.IsNaN(tempValue) {
+				log.Warn().Msg("Sample value NaN not supported")
+				tempValue = defaultNaNValue
+			}
+
 			samples = append(samples, &model.Sample{
 				Metric:    metric,
-				Value:     model.SampleValue(s.Value),
+				Value:     model.SampleValue(tempValue),
 				Timestamp: model.Time(s.Timestamp),
 			})
 		}

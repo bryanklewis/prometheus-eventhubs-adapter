@@ -33,7 +33,6 @@ import (
 
 const (
 	defaultMetricName model.LabelValue = "no_name"
-	defaultNaNValue   float64          = 0
 )
 
 // EventHubConfig for an Event Hub
