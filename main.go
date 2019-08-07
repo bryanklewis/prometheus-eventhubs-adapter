@@ -294,7 +294,7 @@ func protoToSamples(req *prompb.WriteRequest) model.Samples {
 			// Convert sample value float64:NaN to a default value
 			tempValue := s.GetValue()
 			if math.IsNaN(tempValue) {
-				log.Warn().Msg("Sample value NaN not supported")
+				log.Debug().Float64("default-value", defaultNaNValue).Msg("Sample value NaN not supported, setting default")
 				tempValue = defaultNaNValue
 			}
 
