@@ -115,17 +115,14 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 				continue
 			}
 
-			event := eventhub.NewEvent(serializedEvent)
-			if err := c.hub.Send(ctx, event); err != nil {
-				log.ErrorObj(err).Msg("send event failed")
-				continue
-			}
-
-			events = append(events, event)
+			events = append(events, eventhub.NewEvent(serializedEvent))
 		}
 
-		
+		ebi := eventhub.NewEventBatchIterator(events...)
 
+		if err := c.hub.SendBatch(ctx, ebi, eventhub.BatchWithMaxSizeInBytes(c.batchMaxBytes)); err != nil {
+			log.ErrorObj(err).Msg("send event batch")
+		}
 	} else {
 		// Single Event
 		for _, sample := range samples {
@@ -150,7 +147,7 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 			}
 
 			if err := c.hub.Send(ctx, event); err != nil {
-				log.ErrorObj(err).Msg("send event failed")
+				log.ErrorObj(err).Msg("send event")
 				continue
 			}
 		}
