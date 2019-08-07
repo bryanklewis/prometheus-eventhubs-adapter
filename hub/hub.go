@@ -107,6 +107,7 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 	if c.batch {
 		// Batch Events
 		events := make([]*eventhub.Event, len(samples))
+		maxOption := eventhub.BatchWithMaxSizeInBytes(c.batchMaxBytes)
 
 		for _, sample := range samples {
 			serializedEvent, err := c.serializer.Serialize(*sample)
@@ -120,7 +121,7 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 
 		ebi := eventhub.NewEventBatchIterator(events...)
 
-		if err := c.hub.SendBatch(ctx, ebi, eventhub.BatchWithMaxSizeInBytes(c.batchMaxBytes)); err != nil {
+		if err := c.hub.SendBatch(ctx, ebi, maxOption); err != nil {
 			log.ErrorObj(err).Msg("send event batch")
 		}
 	} else {
