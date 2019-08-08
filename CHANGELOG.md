@@ -13,7 +13,7 @@ This project adheres to [Semantic Versioning]( https://semver.org/ ).
 ## v0.3.0 - 08 August 2019
 ### Added
 - Public release
-- Batch events send
+- Send batch events
 - Azure Pipelines config
 
 ## v0.2.0 - 26 July 2019
