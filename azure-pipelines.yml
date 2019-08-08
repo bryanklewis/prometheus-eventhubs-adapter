@@ -1,10 +1,13 @@
 trigger:
+  batch: true
+  tags:
+    include:
+    - v*
   branches:
     include:
     - master
     - feature/*
     - bugfix/*
-    - refs/tags/v*
 
 variables:
     GOVERSION: '1.12'
@@ -58,9 +61,9 @@ jobs:
       displayName: 'Publish $(GOOS) artifacts'
       inputs:
         pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        artifactName: Drop
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-
+        artifactName: $(GOOS)
+      condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
+ 
 
 - job: windows
   pool:
@@ -108,5 +111,5 @@ jobs:
       displayName: 'Publish $(GOOS) artifacts'
       inputs:
         pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        artifactName: Drop
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+        artifactName: $(GOOS)
+      condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
