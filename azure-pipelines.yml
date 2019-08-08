@@ -1,5 +1,4 @@
 trigger:
-  batch: true
   tags:
     include:
     - v*
