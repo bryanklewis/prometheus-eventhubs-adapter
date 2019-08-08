@@ -10,7 +10,7 @@ This project adheres to [Semantic Versioning]( https://semver.org/ ).
 ### Removed
 ### Fixed
 
-## v0.3.0 - 07 August 2019
+## v0.3.0 - 08 August 2019
 ### Added
 - Public release
 - Batch events send

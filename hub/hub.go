@@ -31,10 +31,6 @@ import (
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/serializers"
 )
 
-const (
-	defaultMetricName model.LabelValue = "no_name"
-)
-
 // EventHubConfig for an Event Hub
 type EventHubConfig struct {
 	Namespace     string
@@ -126,18 +122,13 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 	} else {
 		// Single Event
 		for _, sample := range samples {
-			var metricName model.LabelValue
-			var hasName bool
-			metricName, hasName = sample.Metric[model.MetricNameLabel]
-			if !hasName {
-				metricName = defaultMetricName
-			}
-
 			serializedEvent, err := c.serializer.Serialize(*sample)
 			if err != nil {
 				log.ErrorObj(err).Msg("Could not serialize sample")
 				continue
 			}
+
+			metricName, _ := sample.Metric[model.MetricNameLabel]
 
 			event := eventhub.NewEvent(serializedEvent)
 			event.Properties = map[string]interface{}{

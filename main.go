@@ -50,8 +50,9 @@ import (
 
 const (
 	// AppName is the application name. Value is static and will not change.
-	AppName                 = "prometheus-eventhubs-adapter"
-	defaultNaNValue float64 = 0
+	AppName                            = "prometheus-eventhubs-adapter"
+	defaultNaNValue   float64          = 0
+	defaultMetricName model.LabelValue = "no_name"
 )
 
 // Build information. Populated at compile-time using -ldflags "-X main.BUILD=value"
@@ -285,14 +286,20 @@ func getCounterValue(counter prometheus.Counter) float64 {
 func protoToSamples(req *prompb.WriteRequest) model.Samples {
 	var samples model.Samples
 	for _, ts := range req.Timeseries {
-		metric := make(model.Metric, len(ts.Labels))
+		metric := make(model.Metric, (len(ts.Labels) + 1))
 		for _, l := range ts.Labels {
 			metric[model.LabelName(l.Name)] = model.LabelValue(l.Value)
 		}
 
+		// Add a valid Name label if missing
+		_, hasName := metric[model.MetricNameLabel]
+		if !hasName {
+			metric[model.LabelName(model.MetricNameLabel)] = model.LabelValue(defaultMetricName)
+		}
+
 		for _, s := range ts.Samples {
 			// Convert sample value float64:NaN to a default value
-			tempValue := s.GetValue()
+			tempValue := s.Value
 			if math.IsNaN(tempValue) {
 				log.Debug().Float64("default-value", defaultNaNValue).Msg("Sample value NaN not supported, setting default")
 				tempValue = defaultNaNValue

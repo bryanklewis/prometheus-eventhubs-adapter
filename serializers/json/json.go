@@ -25,10 +25,6 @@ import (
 	"github.com/bryanklewis/prometheus-eventhubs-adapter/kusto"
 )
 
-const (
-	defaultMetricName model.LabelValue = "no_name"
-)
-
 // Serializer represents a serializer instance
 type Serializer struct {
 }
@@ -54,17 +50,10 @@ func (s *Serializer) Serialize(sample model.Sample) ([]byte, error) {
 }
 
 func (s *Serializer) createObject(sample model.Sample) map[string]interface{} {
-	var metricName model.LabelValue
-	var hasName bool
-	metricName, hasName = sample.Metric[model.MetricNameLabel]
-	numLabels := len(sample.Metric) - 1
-	if !hasName {
-		numLabels = len(sample.Metric)
-		metricName = defaultMetricName
-	}
+	metricName, _ := sample.Metric[model.MetricNameLabel]
 
 	// Remove sample name from labels set
-	labels := make(map[string]string, numLabels)
+	labels := make(map[string]string, (len(sample.Metric) - 1))
 	for label, value := range sample.Metric {
 		if label != model.MetricNameLabel {
 			labels[string(label)] = string(value)
