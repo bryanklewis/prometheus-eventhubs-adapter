@@ -36,7 +36,6 @@ Adapter configuration can be set using any of the available methods. Configurati
 #### Events (Write)
 
 - `write_batch` send samples in batches (true) or as single events (false). *Default true*
-- `write_maxbytes` the maximum number of bytes in an event or batch. See [Event Hubs Limits](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-quotas). Maximum allowed value is 1000000 bytes but a value less than max is used to account for headroom needed when writing the event. *Default 986000*
 - `write_serializer` the path for telemetry scraps. *Default /metrics*
   - [json](#json)
   - [avro-json](#avro-json)

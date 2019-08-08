@@ -33,30 +33,28 @@ import (
 
 // EventHubConfig for an Event Hub
 type EventHubConfig struct {
-	Namespace     string
-	Hub           string
-	KeyName       string
-	KeyValue      string
-	ConnString    string
-	TenantID      string
-	ClientID      string
-	ClientSecret  string
-	CertPath      string
-	CertPassword  string
-	Batch         bool
-	BatchMaxBytes int
-	ADXMapping    string
-	Serializer    serializers.SerializerConfig
+	Namespace    string
+	Hub          string
+	KeyName      string
+	KeyValue     string
+	ConnString   string
+	TenantID     string
+	ClientID     string
+	ClientSecret string
+	CertPath     string
+	CertPassword string
+	Batch        bool
+	ADXMapping   string
+	Serializer   serializers.SerializerConfig
 }
 
 // EventHubClient sends Prometheus samples to Event Hubs
 type EventHubClient struct {
-	hub           *eventhub.Hub
-	runtimeInfo   *eventhub.HubRuntimeInformation
-	batch         bool
-	batchMaxBytes int
-	adxMapping    string
-	serializer    serializers.Serializer
+	hub         *eventhub.Hub
+	runtimeInfo *eventhub.HubRuntimeInformation
+	batch       bool
+	adxMapping  string
+	serializer  serializers.Serializer
 }
 
 // NewClient creates a new event hub client
@@ -79,12 +77,11 @@ func NewClient(cfg *EventHubConfig) (*EventHubClient, error) {
 	}
 
 	client := &EventHubClient{
-		hub:           hb,
-		runtimeInfo:   rt,
-		adxMapping:    cfg.ADXMapping,
-		batch:         cfg.Batch,
-		batchMaxBytes: cfg.BatchMaxBytes,
-		serializer:    ser,
+		hub:         hb,
+		runtimeInfo: rt,
+		adxMapping:  cfg.ADXMapping,
+		batch:       cfg.Batch,
+		serializer:  ser,
 	}
 
 	return client, nil
@@ -101,9 +98,7 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 
 	if c.batch {
 		// Batch Events
-		events := make([]*eventhub.Event, len(samples))
-		maxOption := eventhub.BatchWithMaxSizeInBytes(c.batchMaxBytes)
-
+		events := make([]*eventhub.Event, 0)
 		for _, sample := range samples {
 			serializedEvent, err := c.serializer.Serialize(*sample)
 			if err != nil {
@@ -114,9 +109,7 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 			events = append(events, eventhub.NewEvent(serializedEvent))
 		}
 
-		ebi := eventhub.NewEventBatchIterator(events...)
-
-		if err := c.hub.SendBatch(ctx, ebi, maxOption); err != nil {
+		if err := c.hub.SendBatch(ctx, eventhub.NewEventBatchIterator(events...)); err != nil {
 			log.ErrorObj(err).Msg("send event batch")
 		}
 	} else {
