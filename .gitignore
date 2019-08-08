@@ -6,6 +6,7 @@
 *.test
 *.prof
 debug
+*__debug_bin
 
 # Folders
 _obj
