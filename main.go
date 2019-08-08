@@ -250,14 +250,13 @@ func writeHandler(w writer) func(c *gin.Context) {
 		samples := protoToSamples(&req)
 		receivedSamples.Add(float64(len(samples)))
 
-		//ctx, cancel := context.WithCancel(c)
-		//defer cancel()
-
-		/*if err := sendSamples(ctx, w, samples); err != nil {
+		ctx, cancel := context.WithCancel(c)
+		defer cancel()
+		if err := sendSamples(ctx, w, samples); err != nil {
 			c.AbortWithStatus(http.StatusInternalServerError)
 			log.ErrorObj(err).Int("num_samples", len(samples)).Msg("Error sending samples to remote storage")
 			return
-		}*/
+		}
 
 		counter, err := sentSamples.GetMetricWithLabelValues(w.Name())
 		if err != nil {
@@ -286,7 +285,7 @@ func getCounterValue(counter prometheus.Counter) float64 {
 func protoToSamples(req *prompb.WriteRequest) model.Samples {
 	var samples model.Samples
 	for _, ts := range req.Timeseries {
-		metric := make(model.Metric, (len(ts.Labels) + 1))
+		metric := make(model.Metric, len(ts.Labels))
 		for _, l := range ts.Labels {
 			metric[model.LabelName(l.Name)] = model.LabelValue(l.Value)
 		}
@@ -316,7 +315,6 @@ func protoToSamples(req *prompb.WriteRequest) model.Samples {
 	return samples
 }
 
-/*
 func sendSamples(ctx context.Context, w writer, samples model.Samples) error {
 	begin := time.Now()
 
@@ -333,4 +331,3 @@ func sendSamples(ctx context.Context, w writer, samples model.Samples) error {
 
 	return nil
 }
-*/
