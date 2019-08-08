@@ -1,0 +1,48 @@
+## prometheus-eventhubs-adapter
+## Settings file in TOML (https://github.com/toml-lang/toml)
+##
+## All settings are #commented out, uncomment settings you want to define.
+## See project for additional documentation: https://github.com/bryanklewis/prometheus-eventhubs-adapter
+
+## -------------------- Adapter --------------------
+## HTTP Server
+#read_timeout = "5s" # Units: "ns", "ms", "s", "m", "h"
+#write_timeout = "10s" # Units: "ns", "ms", "s", "m", "h"
+#listen_address = ":9201"
+#write_path = "/write"
+
+## Prometheus metrics scrape
+#telemetry_path = "/metrics"
+
+## Adapter logging
+#log_level = "info" # Example: "error", "warn", "info", "debug"
+
+## -------------------- Event Hub Writer --------------------
+## Events
+#write_batch = true # Exampe: true, false
+#write_serializer = "json" # Example: "json", "avro-json"
+
+## Azure Data Explorer
+#write_adxmapping = "promMap"
+
+## Event Hub
+#write_namespace = "foo" # Required
+#write_hub = "hubName" # Required
+
+## SAS TokenProvider with Connection String
+#write_connstring = "Endpoint=sb://foo.servicebus.windows.net/;SharedAccessKeyName=MySendKey;SharedAccessKey=fluffypuppy;EntityPath=hubName"
+
+## SAS TokenProvider with Key
+#write_keyname = "MySendKey"
+#write_keyvalue = "fluffypuppy"
+
+## AAD TokenProvider
+#write_tenantid = "directory_id" # Required by AAD TokenProviders
+#write_clientid = "application_id" # Required by AAD TokenProviders
+
+## AAD TokenProvider with Secret
+#write_clientsecret = "dwj"
+
+## AAD TokenProvider with Certificate
+#write_certpath = "/path/to/certificate"
+#write_certpassword = "certpwd"

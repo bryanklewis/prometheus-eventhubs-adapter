@@ -1,10 +1,12 @@
 trigger:
+  tags:
+    include:
+    - v*
   branches:
     include:
     - master
     - feature/*
     - bugfix/*
-    - refs/tags/*
 
 variables:
     GOVERSION: '1.12'
@@ -35,14 +37,32 @@ jobs:
       displayName: 'Compile $(GOOS)/$(GOARCH)'
       inputs:
         command: build
-        arguments: '-ldflags=''$(LDFLAGS)'' -o "$(Build.BinariesDirectory)/$(System.TeamProject)"'
+        arguments: '-ldflags="\"$(LDFLAGS)\"" -o "$(Build.BinariesDirectory)/$(System.TeamProject)"'
 
     - task: CopyFiles@2
-      displayName: 'Stage compiled app'
+      displayName: 'Stage supporting files'
       inputs:
-        sourceFolder: $(Build.BinariesDirectory)
-        contents: '*' 
-        targetFolder: $(Build.ArtifactStagingDirectory)
+        sourceFolder: $(Build.SourcesDirectory)
+        contents: '$(System.TeamProject).toml' 
+        targetFolder: $(Build.BinariesDirectory)
+
+    - task: ArchiveFiles@2
+      displayName: 'Create application archive'
+      inputs:
+        rootFolderOrFile: '$(Build.BinariesDirectory)' 
+        includeRootFolder: false 
+        archiveType: 'tar'
+        tarCompression: 'gz'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(System.TeamProject)_$(GOOS)_$(GOARCH).tar.gz'
+        verbose: true
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish $(GOOS) artifacts'
+      inputs:
+        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: $(GOOS)
+      condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
+ 
 
 - job: windows
   pool:
@@ -68,11 +88,27 @@ jobs:
       displayName: 'Compile $(GOOS)/$(GOARCH)'
       inputs:
         command: build
-        arguments: '-ldflags=''$(LDFLAGS)'' -o "$(Build.BinariesDirectory)\$(System.TeamProject).exe"'
+        arguments: '-ldflags="\"$(LDFLAGS)\"" -o "$(Build.BinariesDirectory)\$(System.TeamProject).exe"'
 
     - task: CopyFiles@2
-      displayName: 'Stage compiled application'
+      displayName: 'Stage supporting files'
       inputs:
-        sourceFolder: $(Build.BinariesDirectory)
-        contents: '*' 
-        targetFolder: $(Build.ArtifactStagingDirectory)
+        sourceFolder: $(Build.SourcesDirectory)
+        contents: '$(System.TeamProject).toml' 
+        targetFolder: $(Build.BinariesDirectory)
+
+    - task: ArchiveFiles@2
+      displayName: 'Create application archive'
+      inputs:
+        rootFolderOrFile: '$(Build.BinariesDirectory)' 
+        includeRootFolder: false 
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(System.TeamProject)_$(GOOS)_$(GOARCH).zip'
+        verbose: true
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish $(GOOS) artifacts'
+      inputs:
+        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: $(GOOS)
+      condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
