@@ -33,8 +33,8 @@ import (
 var (
 	adapterInfo = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "eventhubs_adapter_start",
-			Help: "Time the remote storage adapter for Event Hubs last started.",
+			Name: "eventhubs_adapter_info",
+			Help: "Remote storage adapter for Azure Event Hubs metadata.",
 		},
 		[]string{"version", "commit", "build"},
 	)

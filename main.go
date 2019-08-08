@@ -57,13 +57,16 @@ const (
 
 // Build information. Populated at compile-time using -ldflags "-X main.BUILD=value"
 var (
+	// Build is the git source branch name
 	Version string
-	Commit  string
-	Build   string
+	// Commit is the git source hash
+	Commit string
+	// Build is the CI build information
+	Build string
 )
 
 func main() {
-	adapterInfo.WithLabelValues(Version, Commit, Build).SetToCurrentTime()
+	initMetadata()
 	log.Info().Str("version", Version).Str("commit", Commit).Str("build", Build).Msgf("%s starting", AppName)
 	initConfig()
 
