@@ -206,14 +206,13 @@ func getWriterConfig() *hub.EventHubConfig {
 // initMetadata initializes metadata values for observation
 func initMetadata() {
 	if Version == "" {
-		Version = "unofficial"
+		Version = "development"
 	}
 	if Commit == "" {
 		Commit = "local"
 	}
 	if Build == "" {
-		t := time.Now().Format(time.RFC822)
-		Build = "development/" + t
+		Build = time.Now().Format(time.RFC3339)
 	}
 
 	adapterInfo.WithLabelValues(Version, Commit, Build).Set(1)
