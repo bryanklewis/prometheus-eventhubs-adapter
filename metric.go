@@ -31,6 +31,13 @@ import (
 )
 
 var (
+	adapterInfo = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "eventhubs_adapter_start",
+			Help: "Time the remote storage adapter for Event Hubs last started.",
+		},
+		[]string{"version", "commit", "build"},
+	)
 	httpRequestsTotal = prometheus.NewCounter(
 		prometheus.CounterOpts{
 			Name: "http_requests_total",
@@ -78,6 +85,7 @@ var (
 )
 
 func init() {
+	prometheus.MustRegister(adapterInfo)
 	prometheus.MustRegister(httpRequestsTotal)
 	prometheus.MustRegister(receivedSamples)
 	prometheus.MustRegister(sentSamples)

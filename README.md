@@ -4,13 +4,13 @@
 [Prometheus](https://prometheus.io/docs/operating/integrations/) remote storage adapter for [Azure Event Hubs](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-about).
 
 ## Architecture
-
+---
 ![alt text](./docs/images/adapter-arch.png "Adapter Architecture")
 
 Additional information on using Azure Data Explorer (Kusto) with events written by this adapter is in [docs/adx.md](./docs/adx.md)
 
 ## Configuration
-
+---
 Adapter configuration can be set using any of the available methods. Configuration is returned using the following precedence order. Each item takes precedence over the item below it:
 
 * [Commandline Flags](#commandline-flags)
@@ -32,6 +32,7 @@ Adapter configuration can be set using any of the available methods. Configurati
   - warn
   - info
   - debug
+  - none
 
 #### Events (Write)
 
@@ -106,7 +107,7 @@ The adapter will search for a TOML formatted file with the name `prometheus-even
 Example TOML file: [`prometheus-eventhubs-adapter.toml`](./prometheus-eventhubs-adapter.toml)
 
 ## Prometheus
-
+---
 You must tell prometheus to use this remote storage adapter by adding the following lines to `prometheus.yml`:
 ```yaml
 remote_write:
@@ -114,7 +115,7 @@ remote_write:
 ```
 
 ## Output
-
+---
 Azure Event Hubs connections are created using AMQP with the [Golang Event Hubs Client](https://github.com/Azure/azure-event-hubs-go). Timestamps are formatted in RFC3339 UTC. Metric samples with a float64 value of `NaN` (not-a-number) are set to `0` before serialization.
 
 Adapter will serialize the events depending on the `write_serializer` value.
@@ -159,7 +160,7 @@ Encodes events as JSON using the goavro library. The Avro-JSON data model is the
 ```
 
 ## Building
-
+---
 Requirements:
 
 * [Go](https://golang.org/dl/) 1.12.x or higher
@@ -171,7 +172,7 @@ go build
 ```
 
 ## License
-
+---
 Copyright 2019 Micron Technology, Inc. All rights reserved. Licensed under the [Apache 2.0](./LICENSE) license.
 
 ### Third Party Dependencies

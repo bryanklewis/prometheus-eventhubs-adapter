@@ -65,7 +65,7 @@ func parseFlags() {
 	flag.StringVar(&adapterConfig.telemetryPath, "telemetry_path", "/metrics", "Path for telemetry scraps.")
 	viper.SetDefault("telemetry_path", "/metrics")
 
-	flag.StringVar(&adapterConfig.logLevel, "log_level", "info", "The log level to use [ \"error\", \"warn\", \"info\", \"debug\" ].")
+	flag.StringVar(&adapterConfig.logLevel, "log_level", "info", "The log level to use [ \"error\", \"warn\", \"info\", \"debug\", \"none\" ].")
 	viper.SetDefault("log_level", "info")
 
 	// Event Hub Writer

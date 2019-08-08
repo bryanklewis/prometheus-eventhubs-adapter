@@ -2,10 +2,8 @@ cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMT
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 contrib.go.opencensus.io/exporter/ocagent v0.5.0 h1:TKXjQSRS0/cCDrP7KvkgU6SmILtF/yV2TOs/02K/WZQ=
 contrib.go.opencensus.io/exporter/ocagent v0.5.0/go.mod h1:ImxhfLRpxoYiSq891pBrLVhN+qmP8BTVvdH2YLs7Gl0=
-github.com/Azure/azure-amqp-common-go v1.1.4 h1:DmPXxmLZwi/71CgRTZIKR6yiKEW3eC42S4gSBhfG7y0=
 github.com/Azure/azure-amqp-common-go/v2 v2.0.0 h1:98xtMbghfioKloSBZgkIwH/SINcDYtxXBbUZoqCePiI=
 github.com/Azure/azure-amqp-common-go/v2 v2.0.0/go.mod h1:YDoDY50iQ2OabOP0WUQoNR7vpDjRlB13vIZVrvUoJLo=
-github.com/Azure/azure-amqp-common-go/v2 v2.1.0 h1:+QbFgmWCnPzdaRMfsI0Yb6GrRdBj5jVL8N3EXuEUcBQ=
 github.com/Azure/azure-event-hubs-go/v2 v2.0.0 h1:ZzYGZOBxlB5Y2ZL0aGypSOYHTAWd3hKoWlLZH0CLuIY=
 github.com/Azure/azure-event-hubs-go/v2 v2.0.0/go.mod h1:HqOqkORXit1YOUS7CWSVkS+r+2l6yG85YPbOs+01rYU=
 github.com/Azure/azure-pipeline-go v0.1.8/go.mod h1:XA1kFWRVhSK+KNFiOhfv83Fv8L9achrP7OxIzeTn1Yg=

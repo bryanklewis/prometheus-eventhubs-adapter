@@ -63,6 +63,7 @@ var (
 )
 
 func main() {
+	adapterInfo.WithLabelValues(Version, Commit, Build).SetToCurrentTime()
 	log.Info().Str("version", Version).Str("commit", Commit).Str("build", Build).Msgf("%s starting", AppName)
 	initConfig()
 
