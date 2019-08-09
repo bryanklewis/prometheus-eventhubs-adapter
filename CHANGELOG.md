@@ -12,7 +12,7 @@ Template:
 ### Fixed
 ```
 
-## v0.3.1 - \[Unreleased\]
+## master - \[Unreleased\]
 ### Fixed
 - Build ldflags not populating on windows
 - Documentation fixes
