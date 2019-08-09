@@ -60,7 +60,7 @@ jobs:
       displayName: 'Publish $(GOOS) artifacts'
       inputs:
         pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        artifactName: $(GOOS)
+        artifactName: Drop
       condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
  
 - job: windows
@@ -109,5 +109,5 @@ jobs:
       displayName: 'Publish $(GOOS) artifacts'
       inputs:
         pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        artifactName: $(GOOS)
+        artifactName: Drop
       condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
