@@ -53,7 +53,7 @@ jobs:
         includeRootFolder: false 
         archiveType: 'tar'
         tarCompression: 'gz'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(System.TeamProject)_$(GOOS)_$(GOARCH).tar.gz'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(System.TeamProject)_$(Build.SourceBranchName)_$(GOOS)_$(GOARCH).tar.gz'
         verbose: true
 
     - task: PublishBuildArtifacts@1
@@ -63,7 +63,6 @@ jobs:
         artifactName: $(GOOS)
       condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
  
-
 - job: windows
   pool:
     vmImage: 'vs2017-win2016'
@@ -103,7 +102,7 @@ jobs:
         rootFolderOrFile: '$(Build.BinariesDirectory)' 
         includeRootFolder: false 
         archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(System.TeamProject)_$(GOOS)_$(GOARCH).zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(System.TeamProject)_$(Build.SourceBranchName)_$(GOOS)_$(GOARCH).zip'
         verbose: true
 
     - task: PublishBuildArtifacts@1
