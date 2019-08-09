@@ -35,8 +35,8 @@ FROM scratch
 LABEL name="bryanklewis/prometheus-eventhubs-adapter" \
       maintainer="Bryan Lewis <dbre@micron.com>" \
       vendor="Micron Technology, Inc." \
-      summary="Logstash on OpenShift" \
-      description="Logstash custom image for RedHat OpenShift."
+      summary="A Prometheus remote storage adapter for Azure Event Hubs." \
+      description="prometheus-eventhubs-adapter is a Prometheus remote storage adapter for Azure Event Hubs. The remote write features of Prometheus allow transparently sending samples intended for long term storage."
 
 # -----------------------------------------------------------------------------
 # Import from builder
