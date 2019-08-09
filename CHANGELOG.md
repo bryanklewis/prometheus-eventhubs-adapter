@@ -10,6 +10,11 @@ This project adheres to [Semantic Versioning]( https://semver.org/ ).
 ### Removed
 ### Fixed
 
+## v0.3.1 - 09 August 2019
+### Fixed
+- Build ldflags not populating on windows
+- Documentation fixes
+
 ## v0.3.0 - 08 August 2019
 ### Added
 - Public release
