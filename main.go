@@ -57,7 +57,7 @@ const (
 
 // Build information. Populated at compile-time using -ldflags "-X main.BUILD=value"
 var (
-	// Build is the git source branch name
+	// Version is the git branch name
 	Version string
 	// Commit is the git source hash
 	Commit string
