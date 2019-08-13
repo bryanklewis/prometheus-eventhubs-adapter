@@ -40,16 +40,16 @@ Adapter configuration can be set using any of the available methods. Configurati
 | ------------------------ | ------------------------------------------------ |
 | `--write_namespace`      | the namespace of the Event Hub instance. *Required unless using connection string*  |
 | `--write_hub`            | the name of the Event Hub instance. *Required unless using connection string* |
-|                          |  |
+| 1. SAS TokenProvider        |  |
 | `--write_keyname`        | the name of the Event Hub key |
 | `--write_keyvalue`       | the secret for the Event Hub key named in `write_keyname` |
-|                          |  |
+| 2. SAS TokenProvider        |  |
 | `--write_connstring`     | connection string from the Azure portal like: `Endpoint=sb://foo.servicebus.windows.net/;SharedAccessKeyName=MySendKey;SharedAccessKey=fluffypuppy;EntityPath=hubName` |
-|                          |  |
+| 1. AAD TokenProvider        |  |
 | `--write_tenantid`       | the Azure Tenant ID |
 | `--write_clientid`       | the Azure Application ID |
 | `--write_clientsecret`   | secret for the corresponding application |
-|                          |  |
+| 2. AAD TokenProvider        |  |
 | `--write_tenantid`       | the Azure Tenant ID |
 | `--write_clientid`       | the Azure Application ID |
 | `--write_certpath`       | the path to the certificate file |
