@@ -36,7 +36,7 @@ LABEL name="bryanklewis/prometheus-eventhubs-adapter" \
       maintainer="Bryan Lewis <dbre@micron.com>" \
       vendor="Micron Technology, Inc." \
       summary="A Prometheus remote storage adapter for Azure Event Hubs." \
-      description="prometheus-eventhubs-adapter is a Prometheus remote storage adapter for Azure Event Hubs. The remote write features of Prometheus allow transparently sending samples intended for long term storage."
+      description="Uses the remote write features of Prometheus to send samples intended for processing and storage on Azure."
 
 # -----------------------------------------------------------------------------
 # Import from builder
@@ -48,7 +48,8 @@ COPY --from=builder /etc/passwd /etc/passwd
 # -----------------------------------------------------------------------------
 # Add application
 # -----------------------------------------------------------------------------
-
+COPY ${Build_BinariesDirectory}/prometheus-eventhubs-adapter /usr/bin/
+COPY ${Build_SourcesDirectory}/prometheus-eventhubs-adapter.toml /etc/prometheus-eventhubs-adapter/
 
 # -----------------------------------------------------------------------------
 # Provide a non-root user to run the process.
@@ -56,13 +57,11 @@ COPY --from=builder /etc/passwd /etc/passwd
 RUN echo "===> Add user prometheus ....." && \
     groupadd --gid 1001 prometheus && \
     adduser --uid 1001 --gid 1001 \
-      --home-dir /usr/share/prometheus --no-create-home \
-      prometheus
-
-# -----------------------------------------------------------------------------
-# Set path
-# -----------------------------------------------------------------------------
-WORKDIR /app
+      --home-dir /etc/prometheus-eventhubs-adapter \
+      --no-create-home \
+      prometheus && \
+    echo "===> Set permissions ....." && \
+    chown -R 1001:1001 /etc/prometheus-eventhubs-adapter /usr/bin/prometheus-eventhubs-adapter
 
 # -----------------------------------------------------------------------------
 # Define execution user
@@ -77,4 +76,4 @@ EXPOSE 9201 5671 5672
 # -----------------------------------------------------------------------------
 # Run container
 # -----------------------------------------------------------------------------
-ENTRYPOINT ["/bin/echo", "-listen_address=:9201"]
+ENTRYPOINT ["/usr/bin/prometheus-eventhubs-adapter", "--listen_address=:9201"]
