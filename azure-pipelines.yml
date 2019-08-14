@@ -60,8 +60,8 @@ jobs:
       displayName: Build Docker image
       inputs:
         command: build
-        arguments: '--build-arg BIN_DIR=$(Build.BinariesDirectory),SOURCE_DIR=$(Build.SourcesDirectory)'
-        Dockerfile: ./build/package/Dockerfile
+        buildContext: $(Build.BinariesDirectory)
+        Dockerfile: $(Build.SourcesDirectory)/build/package/Dockerfile
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish $(GOOS) artifacts'

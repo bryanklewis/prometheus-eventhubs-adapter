@@ -12,26 +12,19 @@
 # -----------------------------------------------------------------------------
 FROM golang:alpine AS builder
 
-ARG BIN_DIR
-ARG SOURCE_DIR
-
 # -----------------------------------------------------------------------------
 # Install system packages
 # -----------------------------------------------------------------------------
-RUN echo "===> Updating Alpine Linux ....." && \
-    apk update && \
-    echo "===> Installing additional packages ....." && \
-    apk add --no-cache \
-      ca-certificates \
-      tzdata && \
-    echo "===> Update certificates folder ....." && \
-    update-ca-certificates
+RUN apk update
+RUN apk add --no-cache ca-certificates tzdata
+RUN update-ca-certificates 2>/dev/null || true
 
 # -----------------------------------------------------------------------------
 # Stage application
 # -----------------------------------------------------------------------------
-COPY ${BIN_DIR}/prometheus-eventhubs-adapter /var/tmp/
-COPY ${SOURCE_DIR}/prometheus-eventhubs-adapter.toml /var/tmp/
+# Agent binaries directory should be set as build context
+COPY prometheus-eventhubs-adapter /var/tmp/
+COPY prometheus-eventhubs-adapter.toml /var/tmp/
 
 # -----------------------------------------------------------------------------
 # Base image (run)
