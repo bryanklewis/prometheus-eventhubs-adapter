@@ -56,6 +56,13 @@ jobs:
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(System.TeamProject)_$(Build.SourceBranchName)_$(GOOS)_$(GOARCH).tar.gz'
         verbose: true
 
+    - task: Docker@2
+      displayName: Build Docker image
+      inputs:
+        command: build
+        arguments: '--build-arg BIN_DIR=$(Build.BinariesDirectory),SOURCE_DIR=$(Build.SourcesDirectory)'
+        Dockerfile: ./build/package/Dockerfile
+
     - task: PublishBuildArtifacts@1
       displayName: 'Publish $(GOOS) artifacts'
       inputs:

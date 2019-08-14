@@ -12,6 +12,9 @@
 # -----------------------------------------------------------------------------
 FROM golang:alpine AS builder
 
+ARG BIN_DIR
+ARG SOURCE_DIR
+
 # -----------------------------------------------------------------------------
 # Install system packages
 # -----------------------------------------------------------------------------
@@ -23,6 +26,12 @@ RUN echo "===> Updating Alpine Linux ....." && \
       tzdata && \
     echo "===> Update certificates folder ....." && \
     update-ca-certificates
+
+# -----------------------------------------------------------------------------
+# Stage application
+# -----------------------------------------------------------------------------
+COPY ${BIN_DIR}/prometheus-eventhubs-adapter /var/tmp/
+COPY ${SOURCE_DIR}/prometheus-eventhubs-adapter.toml /var/tmp/
 
 # -----------------------------------------------------------------------------
 # Base image (run)
@@ -44,24 +53,24 @@ LABEL name="bryanklewis/prometheus-eventhubs-adapter" \
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /etc/passwd /etc/passwd
-
-# -----------------------------------------------------------------------------
-# Add application
-# -----------------------------------------------------------------------------
-COPY ${Build_BinariesDirectory}/prometheus-eventhubs-adapter /usr/bin/
-COPY ${Build_SourcesDirectory}/prometheus-eventhubs-adapter.toml /etc/prometheus-eventhubs-adapter/
+COPY --from=builder /var/tmp/prometheus-eventhubs-adapter /usr/bin/
+COPY --from=builder /var/tmp/prometheus-eventhubs-adapter.toml /etc/prometheus-eventhubs-adapter/
 
 # -----------------------------------------------------------------------------
 # Provide a non-root user to run the process.
 # -----------------------------------------------------------------------------
 RUN echo "===> Add user prometheus ....." && \
+    mkdir -p /var/lib/prometheus-eventhubs-adapter && \
     groupadd --gid 1001 prometheus && \
     adduser --uid 1001 --gid 1001 \
-      --home-dir /etc/prometheus-eventhubs-adapter \
+      --home-dir /var/lib/prometheus-eventhubs-adapter \
       --no-create-home \
+      --comment "prometheus services" \
       prometheus && \
     echo "===> Set permissions ....." && \
-    chown -R 1001:1001 /etc/prometheus-eventhubs-adapter /usr/bin/prometheus-eventhubs-adapter
+    chown -R 1001:1001 /usr/bin/prometheus-eventhubs-adapter /var/lib/prometheus-eventhubs-adapter /etc/prometheus-eventhubs-adapter && \
+    chmod -R 755 /usr/bin/prometheus-eventhubs-adapter /var/lib/prometheus-eventhubs-adapter && \
+    chmod -R 644 /etc/prometheus-eventhubs-adapter
 
 # -----------------------------------------------------------------------------
 # Define execution user
