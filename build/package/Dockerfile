@@ -29,17 +29,10 @@ COPY prometheus-eventhubs-adapter.toml /etc/prometheus-eventhubs-adapter/
 # -----------------------------------------------------------------------------
 # Provide a non-root user to run the process.
 # -----------------------------------------------------------------------------
-RUN echo "===> Add user prometheus ....." && \
-    mkdir -p /var/lib/prometheus-eventhubs-adapter && \
-    groupadd --gid 1001 prometheus && \
-    adduser --uid 1001 --gid 1001 \
-      --home-dir /var/lib/prometheus-eventhubs-adapter \
-      --no-create-home \
-      --comment "prometheus services" \
-      prometheus && \
-    echo "===> Set permissions ....." && \
-    chown -R 1001:1001 /usr/bin/prometheus-eventhubs-adapter /var/lib/prometheus-eventhubs-adapter /etc/prometheus-eventhubs-adapter && \
-    chmod -R 755 /usr/bin/prometheus-eventhubs-adapter /var/lib/prometheus-eventhubs-adapter && \
+RUN addgroup -g 1001 -S prometheus && \
+    adduser -u 1001 -S prometheus -G prometheus && \
+    chown -R 1001:1001 /usr/bin/prometheus-eventhubs-adapter /etc/prometheus-eventhubs-adapter && \
+    chmod -R 755 /usr/bin/prometheus-eventhubs-adapter && \
     chmod -R 644 /etc/prometheus-eventhubs-adapter
 
 # -----------------------------------------------------------------------------
@@ -62,7 +55,6 @@ LABEL name="bryanklewis/prometheus-eventhubs-adapter" \
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /etc/passwd /etc/passwd
-COPY --from=builder /var/lib/prometheus-eventhubs-adapter /var/lib/prometheus-eventhubs-adapter
 COPY --from=builder /usr/bin/prometheus-eventhubs-adapter /usr/bin/
 COPY --from=builder /etc/prometheus-eventhubs-adapter/prometheus-eventhubs-adapter.toml /etc/prometheus-eventhubs-adapter/
 
