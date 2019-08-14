@@ -4,7 +4,7 @@ This project adheres to [Semantic Versioning]( https://semver.org/ ).
 
 Template:
 ```
-## \[Unreleased\]
+## master - \[Unreleased\]
 ### Added
 ### Changed
 ### Deprecated

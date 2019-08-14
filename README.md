@@ -22,61 +22,67 @@ Adapter configuration can be set using any of the available methods. Configurati
 
 #### Adapter
 
-- `read_timeout` the HTTP request timeout to use for incomming connections. A duration string of decimal numbers and a unit suffix. See [time#ParseDuration](https://golang.org/pkg/time/#ParseDuration) package. *Default 5s*.
-- `write_timeout` the HTTP request timeout to use when sending samples to the remote storage. A duration string of decimal numbers and a unit suffix. See [time#ParseDuration](https://golang.org/pkg/time/#ParseDuration) package. *Default 10s*.
-- `listen_address` the address to listen on for web endpoints. *Default :9201*
-- `write_path` the path for write requests. *Default /write*
-- `telemetry_path` the path for telemetry scraps. *Default /metrics*
-- `log_level` the log level to use, from least to most verbose. Using debug will enable an HTTP access log for all incomming connections. *Default info*
-  - error
-  - warn
-  - info
-  - debug
-  - none
+| Flag                     | Description                                      |
+| ------------------------ | ------------------------------------------------ |
+| `--read_timeout`         | the HTTP request timeout to use for incomming connections. A duration string of decimal numbers and a unit suffix. See [time#ParseDuration](https://golang.org/pkg/time/#ParseDuration) package. *Default 5s* |
+| `--write_timeout`        | the HTTP request timeout to use when sending samples to the remote storage. A duration string of decimal numbers and a unit suffix. See [time#ParseDuration](https://golang.org/pkg/time/#ParseDuration) package. *Default 10s* |
+| `--listen_address`       | the address to listen on for web endpoints. *Default :9201* |
+| `--write_path`           | the path for write requests. *Default /write* |
+| `--telemetry_path`       | the path for telemetry scraps. *Default /metrics* |
+| `--log_level`            | the log level to use, from least to most verbose: none, error, warn, info, debug. Using debug will enable an HTTP access log for all incomming connections. *Default info* |
+| `--write_batch`          | send samples in batches (true) or as single events (false). *Default true* |
+| `--write_serializer`     | serializer to use when sending events. See [json](#json), [avro-json](#avro-json) |
+| `--write_adxmapping`     | the name of the Azure Data Explorer (ADX or Kusto) mapping used for Schema column mapping of events during [data injestion](./docs/adx.md) to an ADX cluster. *Default promMap* |
 
-#### Events (Write)
+#### Event Hub
 
-- `write_batch` send samples in batches (true) or as single events (false). *Default true*
-- `write_serializer` the path for telemetry scraps. *Default /metrics*
-  - [json](#json)
-  - [avro-json](#avro-json)
-- `write_adxmapping` the name of the Azure Data Explorer (ADX or Kusto) mapping used for Schema column mapping of events during [data injestion](./docs/adx.md) to an ADX cluster. *Default promMap*
+| Flag                     | Description                                      |
+| ------------------------ | ------------------------------------------------ |
+| `--write_namespace`      | the namespace of the Event Hub instance. *Required unless using connection string*  |
+| `--write_hub`            | the name of the Event Hub instance. *Required unless using connection string* |
+| 1. SAS TokenProvider        |  |
+| `--write_keyname`        | the name of the Event Hub key |
+| `--write_keyvalue`       | the secret for the Event Hub key named in `write_keyname` |
+| 2. SAS TokenProvider        |  |
+| `--write_connstring`     | connection string from the Azure portal like: `Endpoint=sb://foo.servicebus.windows.net/;SharedAccessKeyName=MySendKey;SharedAccessKey=fluffypuppy;EntityPath=hubName` |
+| 1. AAD TokenProvider        |  |
+| `--write_tenantid`       | the Azure Tenant ID |
+| `--write_clientid`       | the Azure Application ID |
+| `--write_clientsecret`   | secret for the corresponding application |
+| 2. AAD TokenProvider        |  |
+| `--write_tenantid`       | the Azure Tenant ID |
+| `--write_clientid`       | the Azure Application ID |
+| `--write_certpath`       | the path to the certificate file |
+| `--write_certpassword`   | the password for the certificate |
 
-#### Event Hub (Write)
+You must set `write_namespace`, `write_hub` and one of the token providers OR use `write_connstring`.
 
-You must set vars `write_namespace`, `write_hub` and one of the token providers.
-
-- `write_namespace` the namespace of the Event Hub instance
-- `write_hub` the name of the Event Hub instance
-
-#### Event Hub (Write) SAS TokenProvider
-
-There are two sets of environment variables which can produce a SAS TokenProvider
+There are two sets of configuration flags which can produce a SAS TokenProvider.
 
 1. Expected Environment Variables:
-    - `write_keyname` the name of the Event Hub key
-    - `write_keyvalue` the secret for the Event Hub key named in `write_keyname`
+    - `--write_keyname`
+    - `--write_keyvalue`
 
 2. Expected Environment Variable:
-    - `write_connstring` connection string from the Azure portal like: `Endpoint=sb://foo.servicebus.windows.net/;SharedAccessKeyName=MySendKey;SharedAccessKey=fluffypuppy;EntityPath=hubName`
+    - `--write_connstring`
 
-#### Event Hub (Write) AAD TokenProvider
+There are two sets of configuration flags which can produce a AAD TokenProvider.
 
 1. Client Credentials: attempt to authenticate with a [Service Principal](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal) via
-    - `write_tenantid` the Azure Tenant ID
-    - `write_clientid` the Azure Application ID
-    - `write_clientsecret` a key / secret for the corresponding application
+    - `--write_tenantid`
+    - `--write_clientid`
+    - `--write_clientsecret`
 
 2. Client Certificate: attempt to authenticate with a Service Principal via 
-    - `write_tenantid` the Azure Tenant ID
-    - `write_clientid` the Azure Application ID
-    - `write_certpath` the path to the certificate file
-    - `write_certpassword` the password for the certificate
+    - `--write_tenantid`
+    - `--write_clientid`
+    - `--write_certpath`
+    - `--write_certpassword`
 
 **Sample**
 ```bash
 ## Linux
-./prometheus-eventhubs-adapter -read_timeout=5s -log_level=info -write_batch
+./prometheus-eventhubs-adapter --read_timeout=5s --log_level=info --write_batch
 ```
 
 ### Environment Variables
@@ -100,7 +106,7 @@ echo %ADAP_WRITE_BATCH%
 The adapter will search for a TOML formatted file with the name `prometheus-eventhubs-adapter.toml` in the directories listed below in ordered.
 
 1. Directory where executable is located
-2. On unix-like systems: */etc/prometheus-eventhubs-adapter/*
+2. On unix-like systems: */etc/prometheus-eventhubs-adapter/prometheus.yml*
 3. Current working directory
 4. OS-specific home directory
 

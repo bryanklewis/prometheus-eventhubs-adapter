@@ -9,7 +9,7 @@ trigger:
     - bugfix/*
 
 variables:
-    GOVERSION: '1.12'
+    GOVERSION: '1.12.6'
     LDFLAGS: '-w -s -X=main.Version=$(Build.SourceBranchName) -X=main.Commit=$(Build.SourceVersion) -X=main.Build=$(Build.BuildNumber)'
 
 jobs:
@@ -53,17 +53,23 @@ jobs:
         includeRootFolder: false 
         archiveType: 'tar'
         tarCompression: 'gz'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(System.TeamProject)_$(GOOS)_$(GOARCH).tar.gz'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(System.TeamProject)_$(Build.SourceBranchName)_$(GOOS)_$(GOARCH).tar.gz'
         verbose: true
+
+    - task: Docker@2
+      displayName: Build Docker image
+      inputs:
+        command: build
+        buildContext: $(Build.BinariesDirectory)
+        Dockerfile: $(Build.SourcesDirectory)/build/package/Dockerfile
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish $(GOOS) artifacts'
       inputs:
         pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        artifactName: $(GOOS)
+        artifactName: Drop
       condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
  
-
 - job: windows
   pool:
     vmImage: 'vs2017-win2016'
@@ -103,12 +109,12 @@ jobs:
         rootFolderOrFile: '$(Build.BinariesDirectory)' 
         includeRootFolder: false 
         archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(System.TeamProject)_$(GOOS)_$(GOARCH).zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(System.TeamProject)_$(Build.SourceBranchName)_$(GOOS)_$(GOARCH).zip'
         verbose: true
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish $(GOOS) artifacts'
       inputs:
         pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        artifactName: $(GOOS)
+        artifactName: Drop
       condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
