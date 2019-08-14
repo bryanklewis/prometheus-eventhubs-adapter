@@ -4,7 +4,7 @@ This project adheres to [Semantic Versioning]( https://semver.org/ ).
 
 Template:
 ```
-## \[Unreleased\]
+## master - \[Unreleased\]
 ### Added
 ### Changed
 ### Deprecated
@@ -12,7 +12,7 @@ Template:
 ### Fixed
 ```
 
-## v0.3.1 - \[Unreleased\]
+## master - \[Unreleased\]
 ### Fixed
 - Build ldflags not populating on windows
 - Documentation fixes
