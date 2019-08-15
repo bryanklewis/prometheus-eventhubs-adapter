@@ -22,32 +22,32 @@ Adapter configuration can be set using any of the available methods. Configurati
 
 #### Adapter
 
-| Flag                     | Description              |
-| ------------------------ | ------------------------ |
-| `--read_timeout`         | the HTTP request timeout to use for incomming connections. A duration string of decimal numbers and a unit suffix. See [time#ParseDuration](https://golang.org/pkg/time/#ParseDuration) package. *Default 5s* |
-| `--write_timeout`        | the HTTP request timeout to use when sending samples to the remote storage. A duration string of decimal numbers and a unit suffix. See [time#ParseDuration](https://golang.org/pkg/time/#ParseDuration) package. *Default 10s* |
-| `--listen_address`       | the address to listen on for web endpoints. *Default :9201* |
-| `--write_path`           | the path for write requests. *Default /write* |
-| `--telemetry_path`       | the path for telemetry scraps. *Default /metrics* |
-| `--log_level`            | the log level to use, from least to most verbose: none, error, warn, info, debug. Using debug will enable an HTTP access log for all incomming connections. *Default info* |
-| `--write_batch`          | send samples in batches (true) or as single events (false). *Default true* |
-| `--write_serializer`     | serializer to use when sending events. See [json](#json), [avro-json](#avro-json) |
-| `--write_adxmapping`     | the name of the Azure Data Explorer (ADX or Kusto) mapping used for Schema column mapping of events during [data injestion](./docs/adx.md) to an ADX cluster. *Default promMap* |
+Flag | Description
+---- | -----------
+`--read_timeout`       | the HTTP request timeout to use for incomming connections. A duration string of decimal numbers and a unit suffix. See [time#ParseDuration](https://golang.org/pkg/time/#ParseDuration) package. *Default 5s*
+`--write_timeout`      | the HTTP request timeout to use when sending samples to the remote storage. A duration string of decimal numbers and a unit suffix. See [time#ParseDuration](https://golang.org/pkg/time/#ParseDuration) package. *Default 10s*
+`--listen_address` | the address to listen on for web endpoints. *Default :9201*
+`--write_path`         | the path for write requests. *Default /write*
+`--telemetry_path`     | the path for telemetry scraps. *Default /metrics*
+`--log_level`          | the log level to use, from least to most verbose: none, error, warn, info, debug. Using debug will enable an HTTP access log for all incomming connections. *Default info*
+`--write_batch`        | send samples in batches (true) or as single events (false). *Default true*
+`--write_serializer`   | serializer to use when sending events. See [json](#json), [avro-json](#avro-json)
+`--write_adxmapping`   | the name of the Azure Data Explorer (ADX or Kusto) mapping used for Schema column mapping of events during [data injestion](./docs/adx.md) to an ADX cluster. *Default promMap*
 
 #### Event Hub
 
-| Flag                     | Description              |
-| ------------------------ | ------------------------ |
-| `--write_namespace`      | the namespace of the Event Hub instance. *Required unless using connection string*  |
-| `--write_hub`            | the name of the Event Hub instance. *Required unless using connection string* |
-| `--write_keyname`        | the name of the Event Hub key |
-| `--write_keyvalue`       | the secret for the Event Hub key named in `write_keyname` |
-| `--write_connstring`     | connection string from the Azure portal |
-| `--write_tenantid`       | the Azure Tenant ID |
-| `--write_clientid`       | the Azure Application ID |
-| `--write_clientsecret`   | secret for the corresponding application |
-| `--write_certpath`       | the path to the certificate file |
-| `--write_certpassword`   | the password for the certificate |
+Flag | Description
+---- | -----------
+`--write_namespace`    | the namespace of the Event Hub instance. *Required unless using connection string*
+`--write_hub`          | the name of the Event Hub instance. *Required unless using connection string*
+`--write_keyname`      | the name of the Event Hub key
+`--write_keyvalue`     | the secret for the Event Hub key named in `write_keyname`
+`--write_connstring`   | connection string from the Azure portal
+`--write_tenantid`     | the Azure Tenant ID
+`--write_clientid`     | the Azure Application ID
+`--write_clientsecret` | secret for the corresponding application
+`--write_certpath`     | the path to the certificate file
+`--write_certpassword` | the password for the certificate
 
 You must set `write_namespace`, `write_hub` and one of the token providers OR use `write_connstring`.
 
