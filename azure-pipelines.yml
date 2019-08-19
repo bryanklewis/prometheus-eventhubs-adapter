@@ -5,9 +5,7 @@ trigger:
   branches:
     include:
     - master
-    - feature/*
-    - bugfix/*
-
+    
 variables:
     GOVERSION: '1.12.6'
     LDFLAGS: '-w -s -X=main.Version=$(Build.SourceBranchName) -X=main.Commit=$(Build.SourceVersion) -X=main.Build=$(Build.BuildNumber)'
