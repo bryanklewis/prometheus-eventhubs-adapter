@@ -45,7 +45,6 @@ FROM scratch
 # -----------------------------------------------------------------------------
 LABEL name="bryanklewis/prometheus-eventhubs-adapter" \
       maintainer="Bryan Lewis <dbre@micron.com>" \
-      vendor="Micron Technology, Inc." \
       summary="A Prometheus remote storage adapter for Azure Event Hubs." \
       description="Uses the remote write features of Prometheus to send samples intended for processing and storage on Azure."
 
