@@ -12,7 +12,7 @@ Template:
 ### Fixed
 ```
 
-## v0.3.2 - 19 August 2019
+## master - \[Unreleased\]
 ### Changed
 - Use Alpine instead of scratch based Docker image
 
