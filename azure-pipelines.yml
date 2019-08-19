@@ -70,7 +70,7 @@ jobs:
         containerRegistry: bryanklewis-acr
         repository: $(System.TeamProject)
         tags: |
-          $(Build.SourceBranchName)
+          $(Build.BuildNumber)
       condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
  
 - job: windows
