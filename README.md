@@ -13,7 +13,7 @@ Additional information on using Azure Data Explorer (Kusto) with events written 
 
 Pre-built binaries are available under the project [releases](https://github.com/bryanklewis/prometheus-eventhubs-adapter/releases).
 
-A docker image is available on Docker Hub at [bryanklewis/prometheus-eventhubs-adapter](https://cloud.docker.com/u/bryanklewis/repository/docker/bryanklewis/prometheus-eventhubs-adapter).
+A docker image is available on Docker Hub at [bryanklewis/prometheus-eventhubs-adapter](https://hub.docker.com/r/bryanklewis/prometheus-eventhubs-adapter).
 
 ## Configuration
 
