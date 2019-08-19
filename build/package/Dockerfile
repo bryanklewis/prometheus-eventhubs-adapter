@@ -8,16 +8,24 @@
 # =============================================================================
 #
 # -----------------------------------------------------------------------------
-# Base image (builder)
+# Base image
 # -----------------------------------------------------------------------------
-FROM golang:alpine AS builder
+FROM alpine:3.10
 
 # -----------------------------------------------------------------------------
 # Install system packages
 # -----------------------------------------------------------------------------
 RUN apk update
-RUN apk add --no-cache ca-certificates tzdata
+RUN apk add --no-cache openssl bash ca-certificates tzdata
 RUN update-ca-certificates 2>/dev/null || true
+
+# -----------------------------------------------------------------------------
+# Set image metadata
+# -----------------------------------------------------------------------------
+LABEL name="bryanklewis/prometheus-eventhubs-adapter" \
+      maintainer="Bryan Lewis <dbre@micron.com>" \
+      summary="A Prometheus remote storage adapter for Azure Event Hubs." \
+      description="Uses the remote write features of Prometheus to send samples intended for processing and storage on Azure."
 
 # -----------------------------------------------------------------------------
 # Stage application
@@ -34,28 +42,6 @@ RUN addgroup -g 1001 -S prometheus && \
     chown -R 1001:1001 /usr/bin/prometheus-eventhubs-adapter /etc/prometheus-eventhubs-adapter && \
     chmod -R 755 /usr/bin/prometheus-eventhubs-adapter && \
     chmod -R 644 /etc/prometheus-eventhubs-adapter
-
-# -----------------------------------------------------------------------------
-# Base image (run)
-# -----------------------------------------------------------------------------
-FROM scratch
-
-# -----------------------------------------------------------------------------
-# Set image metadata
-# -----------------------------------------------------------------------------
-LABEL name="bryanklewis/prometheus-eventhubs-adapter" \
-      maintainer="Bryan Lewis <dbre@micron.com>" \
-      summary="A Prometheus remote storage adapter for Azure Event Hubs." \
-      description="Uses the remote write features of Prometheus to send samples intended for processing and storage on Azure."
-
-# -----------------------------------------------------------------------------
-# Import from builder
-# -----------------------------------------------------------------------------
-COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /etc/passwd /etc/passwd
-COPY --from=builder /usr/bin/prometheus-eventhubs-adapter /usr/bin/
-COPY --from=builder /etc/prometheus-eventhubs-adapter/prometheus-eventhubs-adapter.toml /etc/prometheus-eventhubs-adapter/
 
 # -----------------------------------------------------------------------------
 # Define execution user
