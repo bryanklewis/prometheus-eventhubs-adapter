@@ -12,7 +12,9 @@ Template:
 ### Fixed
 ```
 
-## master - \[Unreleased\]
+## v0.3.1 - 19 August 2019
+### Added
+- Docker image
 ### Fixed
 - Build ldflags not populating on windows
 - Documentation fixes

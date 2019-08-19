@@ -9,6 +9,12 @@
 
 Additional information on using Azure Data Explorer (Kusto) with events written by this adapter is in [docs/adx.md](./docs/adx.md)
 
+## Quick Start
+
+Pre-built binaries are available under the project [releases](https://github.com/bryanklewis/prometheus-eventhubs-adapter/releases).
+
+A docker image is available on Docker Hub at [bryanklewis/prometheus-eventhubs-adapter](https://cloud.docker.com/u/bryanklewis/repository/docker/bryanklewis/prometheus-eventhubs-adapter).
+
 ## Configuration
 
 Adapter configuration can be set using any of the available methods. Configuration is returned using the following precedence order. Each item takes precedence over the item below it:
