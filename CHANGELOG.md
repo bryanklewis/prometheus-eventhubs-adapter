@@ -12,6 +12,10 @@ Template:
 ### Fixed
 ```
 
+## v0.3.2 - 19 August 2019
+### Changed
+- Use Alpine instead of scratch based Docker image
+
 ## v0.3.1 - 19 August 2019
 ### Added
 - Docker image
