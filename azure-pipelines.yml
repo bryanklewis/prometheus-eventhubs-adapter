@@ -68,6 +68,7 @@ jobs:
         buildContext: $(Build.BinariesDirectory)
         Dockerfile: $(Build.SourcesDirectory)/build/package/Dockerfile
         containerRegistry: bryanklewis-acr
+        repository: $(System.TeamProject)
         tags: |
           $(Build.SourceBranchName)
       condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
