@@ -69,7 +69,7 @@ jobs:
         repository: bryanklewis/$(System.TeamProject)
         tags: |
           $(Build.SourceBranchName)
-      condition: and(succeeded(), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
     - task: Docker@2
       displayName: 'Build/Push Docker image (version)'
@@ -80,7 +80,7 @@ jobs:
         tags: |
           $(Build.SourceBranchName)
           latest
-      condition: and(succeeded(), eq(variables['Build.Reason'], 'IndividualCI'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
 
 - job: windows
   pool:
