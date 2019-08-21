@@ -66,8 +66,8 @@ var (
 )
 
 func main() {
-	initMetadata()
 	log.Info().Str("version", Version).Str("commit", Commit).Str("build", Build).Msgf("%s starting", AppName)
+	adapterInfo.WithLabelValues(AppName, Version, Commit, Build).Set(1)
 	initConfig()
 
 	writeHub, err := hub.NewClient(getWriterConfig())

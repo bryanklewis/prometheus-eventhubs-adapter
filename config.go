@@ -202,18 +202,3 @@ func getWriterConfig() *hub.EventHubConfig {
 		Serializer:   serializers.SerializerConfig{DataFormat: viper.GetString("write_serializer")},
 	}
 }
-
-// initMetadata initializes metadata values for observation
-func initMetadata() {
-	if Version == "" {
-		Version = "development"
-	}
-	if Commit == "" {
-		Commit = "local"
-	}
-	if Build == "" {
-		Build = time.Now().Format(time.RFC3339)
-	}
-
-	adapterInfo.WithLabelValues(Version, Commit, Build).Set(1)
-}

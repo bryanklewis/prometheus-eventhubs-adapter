@@ -15,6 +15,7 @@ Template:
 ## master - \[Unreleased\]
 ### Changed
 - Use Alpine instead of scratch based Docker image
+- Prefix instrumentation metrics with 'adapter'
 
 ## v0.3.1 - 19 August 2019
 ### Added

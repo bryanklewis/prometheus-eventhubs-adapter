@@ -33,10 +33,10 @@ import (
 var (
 	adapterInfo = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "eventhubs_adapter_info",
+			Name: "adapter_info",
 			Help: "Remote storage adapter for Azure Event Hubs metadata.",
 		},
-		[]string{"version", "commit", "build"},
+		[]string{"name", "version", "commit", "build"},
 	)
 	httpRequestsTotal = prometheus.NewCounter(
 		prometheus.CounterOpts{
@@ -46,27 +46,27 @@ var (
 	)
 	receivedSamples = prometheus.NewCounter(
 		prometheus.CounterOpts{
-			Name: "samples_received_total",
+			Name: "adapter_samples_received_total",
 			Help: "Total number of received samples.",
 		},
 	)
 	sentSamples = prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: "samples_sent_total",
+			Name: "adapter_samples_sent_total",
 			Help: "Total number of processed samples sent to remote storage.",
 		},
 		[]string{"remote"},
 	)
 	failedSamples = prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: "samples_failed_total",
+			Name: "adapter_samples_failed_total",
 			Help: "Total number of processed samples which failed on send to remote storage.",
 		},
 		[]string{"remote"},
 	)
 	sentBatchDuration = prometheus.NewHistogramVec(
 		prometheus.HistogramOpts{
-			Name:    "batch_send_duration_seconds",
+			Name:    "adapter_batch_send_duration_seconds",
 			Help:    "Duration of sample batch send calls to the remote storage.",
 			Buckets: prometheus.DefBuckets,
 		},
