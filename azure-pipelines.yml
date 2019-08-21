@@ -8,7 +8,7 @@ trigger:
     
 variables:
     GOVERSION: '1.12.9'
-    LDFLAGS: "-w -s -X main.Version=$(Build.SourceBranchName) -X main.Commit=$(Build.SourceVersion) -X main.Build=$(Build.BuildNumber)"
+    LDFLAGS: "-v -w -s -X main.Version=$(Build.SourceBranchName) -X main.Commit=$(Build.SourceVersion) -X main.Build=$(Build.BuildNumber)"
 
 jobs:
 - job: linux
