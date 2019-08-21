@@ -74,6 +74,7 @@ jobs:
       inputs:
         command: push
         containerRegistry: bryanklewis-dockerhub
+        repository: bryanklewis/$(System.TeamProject)
         tags: |
           $(Build.SourceBranchName)
       condition: and(succeeded(), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
@@ -83,6 +84,7 @@ jobs:
       inputs:
         command: push
         containerRegistry: bryanklewis-dockerhub
+        repository: bryanklewis/$(System.TeamProject)
         tags: |
           $(Build.SourceBranchName)
           latest
