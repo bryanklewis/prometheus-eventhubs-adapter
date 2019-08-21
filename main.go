@@ -58,11 +58,11 @@ const (
 // Build information. Populated at compile-time using -ldflags "-X main.BUILD=value"
 var (
 	// Version is the git branch name
-	Version string
+	Version = "dev"
 	// Commit is the git source hash
-	Commit string
+	Commit = "local"
 	// Build is the CI build information
-	Build string
+	Build = "local"
 )
 
 func main() {
