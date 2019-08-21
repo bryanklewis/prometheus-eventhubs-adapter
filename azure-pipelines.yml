@@ -65,6 +65,7 @@ jobs:
       displayName: Build Docker image
       inputs:
         command: build
+        repository: bryanklewis/$(System.TeamProject)
         buildContext: $(Build.BinariesDirectory)
         Dockerfile: $(Build.SourcesDirectory)/build/package/Dockerfile
       condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
