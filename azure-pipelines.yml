@@ -54,19 +54,19 @@ jobs:
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(System.TeamProject)_$(Build.SourceBranchName)_$(GOOS)_$(GOARCH).tar.gz'
         verbose: true
 
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish $(GOOS) artifacts'
+      inputs:
+        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: Drop
+      condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
+
     - task: Docker@2
       displayName: Build Docker image
       inputs:
         command: build
         buildContext: $(Build.BinariesDirectory)
         Dockerfile: $(Build.SourcesDirectory)/build/package/Dockerfile
-      condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
-
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish $(GOOS) artifacts'
-      inputs:
-        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        artifactName: Drop
       condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
 
     - task: Docker@2
