@@ -54,6 +54,14 @@ jobs:
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(System.TeamProject)_$(Build.SourceBranchName)_$(GOOS)_$(GOARCH).tar.gz'
         verbose: true
 
+    - task: Docker@2
+      displayName: Build Docker image
+      inputs:
+        command: build
+        buildContext: $(Build.BinariesDirectory)
+        Dockerfile: $(Build.SourcesDirectory)/build/package/Dockerfile
+      condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
+
     - task: PublishBuildArtifacts@1
       displayName: 'Publish $(GOOS) artifacts'
       inputs:
@@ -62,17 +70,26 @@ jobs:
       condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
 
     - task: Docker@2
-      displayName: 'Build and push Docker image'
+      displayName: 'Push Docker image (master)'
       inputs:
-        command: buildAndPush
-        buildContext: $(Build.BinariesDirectory)
-        Dockerfile: $(Build.SourcesDirectory)/build/package/Dockerfile
-        containerRegistry: bryanklewis-acr
+        command: push
         repository: $(System.TeamProject)
+        containerRegistry: bryanklewis-dockerhub
         tags: |
-          $(Build.BuildNumber)
-      condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
- 
+          $(Build.SourceBranchName)
+      condition: and(succeeded(), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+    - task: Docker@2
+      displayName: 'Push Docker image (version tag)'
+      inputs:
+        command: push
+        repository: $(System.TeamProject)
+        containerRegistry: bryanklewis-dockerhub
+        tags: |
+          $(Build.SourceBranchName)
+          latest
+      condition: and(succeeded(), eq(variables['Build.Reason'], 'IndividualCI'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+
 - job: windows
   pool:
     vmImage: 'vs2017-win2016'
