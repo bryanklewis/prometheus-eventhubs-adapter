@@ -12,10 +12,12 @@ Template:
 ### Fixed
 ```
 
-## master - \[Unreleased\]
+## v0.3.2 - 20 August 2019
 ### Changed
 - Use Alpine instead of scratch based Docker image
-- Prefix instrumentation metrics with 'adapter'
+- Push to Docker Hub after build
+- Prefix non-http metrics with 'adapter'
+- Build ldflags not populating on linux
 
 ## v0.3.1 - 19 August 2019
 ### Added
