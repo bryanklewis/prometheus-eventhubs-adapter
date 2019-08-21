@@ -65,6 +65,7 @@ jobs:
       displayName: 'Build/Push Docker image (master)'
       inputs:
         command: buildAndPush
+        buildContext: $(Build.BinariesDirectory)
         containerRegistry: bryanklewis-dockerhub
         repository: bryanklewis/$(System.TeamProject)
         tags: |
@@ -75,6 +76,7 @@ jobs:
       displayName: 'Build/Push Docker image (version)'
       inputs:
         command: buildAndPush
+        buildContext: $(Build.BinariesDirectory)
         containerRegistry: bryanklewis-dockerhub
         repository: bryanklewis/$(System.TeamProject)
         tags: |
