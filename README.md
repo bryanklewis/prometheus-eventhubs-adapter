@@ -106,7 +106,7 @@ echo %ADAP_WRITE_BATCH%
 The adapter will search for a TOML formatted file with the name `prometheus-eventhubs-adapter.toml` in the directories listed below in ordered.
 
 1. Directory where executable is located
-2. On unix-like systems: */etc/prometheus-eventhubs-adapter/prometheus.yml*
+2. On unix-like systems: */etc/prometheus-eventhubs-adapter/prometheus.toml*
 3. Current working directory
 4. OS-specific home directory
 
