@@ -112,6 +112,9 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 		if err := c.hub.SendBatch(ctx, eventhub.NewEventBatchIterator(events...)); err != nil {
 			log.ErrorObj(err).Msg("send event batch")
 		}
+
+		duration := time.Since(begin).Seconds()
+		log.Debug().Int("count", len(samples)).Float64("duration_sec", duration).Msg("Wrote samples as batch events")
 	} else {
 		// Single Event
 		for _, sample := range samples {
@@ -135,10 +138,10 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 				continue
 			}
 		}
-	}
 
-	duration := time.Since(begin).Seconds()
-	log.Debug().Int("count", len(samples)).Float64("duration_sec", duration).Msg("Wrote samples as single events")
+		duration := time.Since(begin).Seconds()
+		log.Debug().Int("count", len(samples)).Float64("duration_sec", duration).Msg("Wrote samples as single events")
+	}
 
 	return nil
 }
