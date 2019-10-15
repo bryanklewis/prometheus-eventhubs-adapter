@@ -169,7 +169,7 @@ Encodes events as JSON using the goavro library. The Avro-JSON data model is the
 
 Requirements:
 
-* [Go](https://golang.org/dl/) 1.12.x or higher
+* [Go](https://golang.org/dl/) 1.13.x or higher
 * Go [modules](https://github.com/golang/go/wiki/Modules) is used for dependency management
 
 ```bash
