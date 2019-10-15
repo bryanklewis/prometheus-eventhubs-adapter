@@ -23,11 +23,7 @@ package main
 */
 
 import (
-	"time"
-
 	"github.com/prometheus/client_golang/prometheus"
-
-	"github.com/bryanklewis/prometheus-eventhubs-adapter/util"
 )
 
 var (
@@ -80,8 +76,6 @@ var (
 		},
 		[]string{"path"},
 	)
-
-	writeThroughput = util.NewThroughputCalc(time.Second)
 )
 
 func init() {
@@ -92,5 +86,4 @@ func init() {
 	prometheus.MustRegister(failedSamples)
 	prometheus.MustRegister(sentBatchDuration)
 	prometheus.MustRegister(httpRequestDuration)
-	writeThroughput.Start()
 }

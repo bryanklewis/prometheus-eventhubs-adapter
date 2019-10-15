@@ -261,18 +261,6 @@ func writeHandler(w writer) func(c *gin.Context) {
 			log.ErrorObj(err).Int("num_samples", len(samples)).Msg("Error sending samples to remote storage")
 			return
 		}
-
-		counter, err := sentSamples.GetMetricWithLabelValues(w.Name())
-		if err != nil {
-			log.ErrorObj(err).Str("labelValue", w.Name()).Msg("Couldn't get a counter")
-		}
-		writeThroughput.SetCurrent(getCounterValue(counter))
-
-		select {
-		case d := <-writeThroughput.Values:
-			log.Info().Float64("samples_per_sec", d).Msg("Samples write throughput")
-		default:
-		}
 	}
 }
 
