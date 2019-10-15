@@ -12,8 +12,13 @@ Template:
 ### Fixed
 ```
 
-## v0.3.3 - \[Unreleased\]
+## v0.3.3 - 14 October 2019
 ### Changed
+- build with golang 1.13.1
+- use azure event hubs sdk v2.0.3
+### Removed
+- throughput calc function
+### Fixed
 - debug message in hub package not accurate
 
 ## v0.3.2 - 20 August 2019
