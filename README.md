@@ -108,7 +108,6 @@ The adapter will search for a TOML formatted file with the name `prometheus-even
 1. Directory where executable is located
 2. On unix-like systems: */etc/prometheus-eventhubs-adapter/prometheus-eventhubs-adapter.toml*
 3. Current working directory
-4. OS-specific home directory
 
 Example TOML file: [`prometheus-eventhubs-adapter.toml`](./prometheus-eventhubs-adapter.toml)
 

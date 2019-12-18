@@ -12,13 +12,14 @@ Template:
 ### Fixed
 ```
 
-## v0.4.0 - 18 December 2019
+## v0.4.1 - 18 December 2019
 ### Changed
 - build with golang 1.13.5
 - use azure event hubs sdk v3
 - bump project dependencies
 ### Removed
 - dead code getCounterValue, part of throughput calc
+- search for config in home directory
 ### Fixed
 - linting simplify sample.Metric[]
 

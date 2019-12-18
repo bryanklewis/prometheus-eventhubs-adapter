@@ -18,7 +18,6 @@ require (
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/linkedin/goavro/v2 v2.9.7
 	github.com/mattn/go-isatty v0.0.11 // indirect
-	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pelletier/go-toml v1.6.0 // indirect
 	github.com/prometheus/client_golang v1.2.1
 	github.com/prometheus/client_model v0.0.0-20191202183732-d1d2010b5bee // indirect
