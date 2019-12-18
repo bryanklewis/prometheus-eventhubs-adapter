@@ -23,7 +23,6 @@ import (
 	"runtime"
 	"time"
 
-	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
@@ -125,7 +124,7 @@ func initConfig() {
 
 	// Config file search: Unix-like system configuration directory
 	if runtime.GOOS != "windows" {
-		viper.AddConfigPath("/etc/" + AppName + "/")
+		viper.AddConfigPath("/etc/" + AppName)
 	}
 
 	// Config file search: current working directory
@@ -133,13 +132,6 @@ func initConfig() {
 		log.Debug().Err(err).Msg("failed to detect working directory")
 	} else {
 		viper.AddConfigPath(workingpath)
-	}
-
-	// Config file search: OS-specific home directory
-	if homepath, err := homedir.Dir(); err != nil {
-		log.Debug().Err(err).Msg("failed to detect home directory")
-	} else {
-		viper.AddConfigPath(homepath)
 	}
 
 	// Read config file
