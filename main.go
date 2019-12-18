@@ -37,9 +37,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gogo/protobuf/proto"
 	"github.com/golang/snappy"
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	io_prometheus_client "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/prompb"
 	"github.com/spf13/viper"
@@ -262,15 +260,6 @@ func writeHandler(w writer) func(c *gin.Context) {
 			return
 		}
 	}
-}
-
-// getCounterValue returns a prometheus counter value
-func getCounterValue(counter prometheus.Counter) float64 {
-	dtoMetric := &io_prometheus_client.Metric{}
-	if err := counter.Write(dtoMetric); err != nil {
-		log.ErrorObj(err).Msg("Error reading counter value")
-	}
-	return dtoMetric.GetCounter().GetValue()
 }
 
 // protoToSamples converts a Prometheus protobuf WriteRequest to Prometheus Samples

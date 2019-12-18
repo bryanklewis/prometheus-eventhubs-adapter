@@ -149,7 +149,7 @@ func initConfig() {
 			log.Debug().Msg("configuration file not detected (optional)")
 		} else {
 			// Config file was found but error was produced
-			log.Panic().Err(err).Msg("Fatal error loading config file \n")
+			log.Error().Err(err).Msg("Error loading config file")
 		}
 	}
 	log.Debug().Msg("configuration file detected (optional)")
@@ -166,7 +166,9 @@ func initConfig() {
 	// Viper uses "pflag", add standard library "flag" to "pflag"
 	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
 	pflag.Parse()
-	viper.BindPFlags(pflag.CommandLine)
+	if err := viper.BindPFlags(pflag.CommandLine); err != nil {
+		log.ErrorObj(err).Msg("Failed to bind pflags to config")
+	}
 
 	// Auto-config
 	configLogging()

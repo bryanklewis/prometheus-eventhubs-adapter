@@ -124,7 +124,7 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 				continue
 			}
 
-			metricName, _ := sample.Metric[model.MetricNameLabel]
+			metricName := sample.Metric[model.MetricNameLabel]
 
 			event := eventhub.NewEvent(serializedEvent)
 			event.Properties = map[string]interface{}{
