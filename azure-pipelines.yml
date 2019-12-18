@@ -24,12 +24,6 @@ jobs:
       displayName: 'Use Go $(GOVERSION)'
       inputs:
         version: '$(GOVERSION)'
-
-    - task: Go@0
-      displayName: 'Show build environment'
-      inputs:
-        command: custom
-        customCommand: env
     
     - task: Go@0
       displayName: 'Compile $(GOOS)/$(GOARCH)'
@@ -97,12 +91,6 @@ jobs:
       displayName: 'Use Go $(GOVERSION)'
       inputs:
         version: '$(GOVERSION)'
-    
-    - task: Go@0
-      displayName: 'Show build environment'
-      inputs:
-        command: custom
-        customCommand: env
 
     - task: Go@0
       displayName: 'Compile $(GOOS)/$(GOARCH)'
