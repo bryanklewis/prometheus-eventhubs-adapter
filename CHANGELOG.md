@@ -17,6 +17,10 @@ Template:
 - build with golang 1.13.5
 - use azure event hubs sdk v3
 - bump project dependencies
+### Removed
+- dead code getCounterValue, part of throughput calc
+### Fixed
+- linting simplify sample.Metric[]
 
 ## v0.3.3 - 14 October 2019
 ### Changed

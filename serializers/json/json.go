@@ -50,7 +50,7 @@ func (s *Serializer) Serialize(sample model.Sample) ([]byte, error) {
 }
 
 func (s *Serializer) createObject(sample model.Sample) map[string]interface{} {
-	metricName, _ := sample.Metric[model.MetricNameLabel]
+	metricName := sample.Metric[model.MetricNameLabel]
 
 	// Remove sample name from labels set
 	labels := make(map[string]string, (len(sample.Metric) - 1))
