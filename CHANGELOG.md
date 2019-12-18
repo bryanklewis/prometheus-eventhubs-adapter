@@ -12,6 +12,12 @@ Template:
 ### Fixed
 ```
 
+## v0.4.0 - 18 December 2019
+### Changed
+- build with golang 1.13.5
+- use azure event hubs sdk v3
+- bump project dependencies
+
 ## v0.3.3 - 14 October 2019
 ### Changed
 - build with golang 1.13.1

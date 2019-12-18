@@ -7,7 +7,7 @@ trigger:
     - master
    
 variables:
-    GOVERSION: '1.13.1'
+    GOVERSION: '1.13.5'
     LDFLAGS: "-w -s -X main.Version=$(Build.SourceBranchName) -X main.Commit=$(Build.SourceVersion) -X main.Build=$(Build.BuildNumber)"
 
 jobs:
@@ -24,12 +24,6 @@ jobs:
       displayName: 'Use Go $(GOVERSION)'
       inputs:
         version: '$(GOVERSION)'
-
-    - task: Go@0
-      displayName: 'Show build environment'
-      inputs:
-        command: custom
-        customCommand: env
     
     - task: Go@0
       displayName: 'Compile $(GOOS)/$(GOARCH)'
@@ -97,12 +91,6 @@ jobs:
       displayName: 'Use Go $(GOVERSION)'
       inputs:
         version: '$(GOVERSION)'
-    
-    - task: Go@0
-      displayName: 'Show build environment'
-      inputs:
-        command: custom
-        customCommand: env
 
     - task: Go@0
       displayName: 'Compile $(GOOS)/$(GOARCH)'

@@ -21,9 +21,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/Azure/azure-amqp-common-go/v2/aad"
-	"github.com/Azure/azure-amqp-common-go/v2/sas"
-	eventhub "github.com/Azure/azure-event-hubs-go/v2"
+	"github.com/Azure/azure-amqp-common-go/v3/aad"
+	"github.com/Azure/azure-amqp-common-go/v3/sas"
+	eventhub "github.com/Azure/azure-event-hubs-go/v3"
 	"github.com/Azure/go-autorest/autorest/azure"
 	"github.com/prometheus/common/model"
 
