@@ -16,7 +16,7 @@ Template:
 ### Changed
 - build with golang 1.13.5
 - use azure event hubs sdk v3
-- bump project dependencies
+- bump project dependencies, except viper
 ### Removed
 - dead code getCounterValue, part of throughput calc
 - search for config in home directory
