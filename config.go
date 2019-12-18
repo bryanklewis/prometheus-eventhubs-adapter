@@ -149,7 +149,7 @@ func initConfig() {
 			log.Debug().Msg("configuration file not detected (optional)")
 		} else {
 			// Config file was found but error was produced
-			log.Fatal().Err(err).Msg("Error loading config file")
+			log.Error().Err(err).Msg("Error loading config file")
 		}
 	}
 	log.Debug().Msg("configuration file detected (optional)")
