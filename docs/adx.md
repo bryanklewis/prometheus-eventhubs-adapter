@@ -38,7 +38,7 @@ event.Properties = map[string]interface{}{
 
 ## Batch Events
 
-Batch events share a common event.Properties bag. Assigning individual values for ADX dynamic routing is not possible. Instead, bulk written events can be processed to a second Event Hub using Azure Stream Analytics. The processed events can then be consumed by the ADX cluster.
+Batch events share a common event.Properties bag. Assigning individual values for ADX dynamic routing using Event Hubs bulk inserts is not possible. Instead, bulk written events can be processed to a second Event Hub using [Azure Stream Analytics](https://docs.microsoft.com/en-us/azure/stream-analytics/stream-analytics-define-outputs#custom-metadata-properties-for-output) to add the required properties. The processed events can then be consumed by the ADX cluster from the second Event Hub.
 
 ### Architecture
 
