@@ -69,34 +69,24 @@ func parseFlags() {
 
 	// Event Hub Writer
 	flag.StringVar(&adapterConfig.writeHub.Namespace, "write_namespace", "", "Namespace of the Event Hub instance.")
-	viper.RegisterAlias("write_namespace", "EVENTHUB_NAMESPACE")
 
 	flag.StringVar(&adapterConfig.writeHub.Hub, "write_hub", "", "Name of the Event Hub.")
-	viper.RegisterAlias("write_hub", "EVENTHUB_NAME")
 
 	flag.StringVar(&adapterConfig.writeHub.KeyName, "write_keyname", "", "Name of the Event Hub key.")
-	viper.RegisterAlias("write_keyname", "EVENTHUB_KEY_NAME")
 
 	flag.StringVar(&adapterConfig.writeHub.KeyValue, "write_keyvalue", "", "Secret for the corresponding \"write_keyname\".")
-	viper.RegisterAlias("write_keyvalue", "EVENTHUB_KEY_VALUE")
 
 	flag.StringVar(&adapterConfig.writeHub.ConnString, "write_connstring", "", "Connection string from the Azure portal.")
-	viper.RegisterAlias("write_connstring", "EVENTHUB_CONNECTION_STRING")
 
 	flag.StringVar(&adapterConfig.writeHub.TenantID, "write_tenantid", "", "Azure Active Directory Tenant ID.")
-	viper.RegisterAlias("write_tenantid", "AZURE_TENANT_ID")
 
 	flag.StringVar(&adapterConfig.writeHub.ClientID, "write_clientid", "", "Azure Active Directory Client ID or Application ID.")
-	viper.RegisterAlias("write_clientid", "AZURE_CLIENT_ID")
 
 	flag.StringVar(&adapterConfig.writeHub.ClientSecret, "write_clientsecret", "", "Secret for the corresponding \"write_clientid\".")
-	viper.RegisterAlias("write_clientsecret", "AZURE_CLIENT_SECRET")
 
 	flag.StringVar(&adapterConfig.writeHub.CertPath, "write_certpath", "", "Path to the certificate file.")
-	viper.RegisterAlias("write_certpath", "AZURE_CERTIFICATE_PATH")
 
 	flag.StringVar(&adapterConfig.writeHub.CertPassword, "write_certpassword", "", "Password for the certificate.")
-	viper.RegisterAlias("write_certpassword", "AZURE_CERTIFICATE_PASSWORD")
 
 	flag.BoolVar(&adapterConfig.writeHub.Batch, "write_batch", true, "Send batch events or single events.")
 	viper.SetDefault("write_batch", true)
