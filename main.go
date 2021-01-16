@@ -31,6 +31,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -68,6 +69,7 @@ func main() {
 	adapterInfo.WithLabelValues(AppName, Version, Commit, Build).Set(1)
 	initConfig()
 
+	// Create EventHub client
 	writeHub, err := hub.NewClient(getWriterConfig())
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to create event hub connection")
@@ -265,6 +267,9 @@ func writeHandler(w writer) func(c *gin.Context) {
 // protoToSamples converts a Prometheus protobuf WriteRequest to Prometheus Samples
 func protoToSamples(req *prompb.WriteRequest) model.Samples {
 	var samples model.Samples
+
+	filterType, filterBy := getFilterConfig()
+
 	for _, ts := range req.Timeseries {
 		metric := make(model.Metric, len(ts.Labels))
 		for _, l := range ts.Labels {
@@ -275,6 +280,12 @@ func protoToSamples(req *prompb.WriteRequest) model.Samples {
 		_, hasName := metric[model.MetricNameLabel]
 		if !hasName {
 			metric[model.LabelName(model.MetricNameLabel)] = model.LabelValue(defaultMetricName)
+		}
+		name := model.MetricNameLabel
+
+		// Now that sample metric has name, let's filter by it
+		if filterSample(&name, &filterType, &filterBy) {
+			continue
 		}
 
 		for _, s := range ts.Samples {
@@ -294,6 +305,47 @@ func protoToSamples(req *prompb.WriteRequest) model.Samples {
 	}
 
 	return samples
+}
+
+// getFilterConfig fetches active filter config
+func getFilterConfig() (int, []string) {
+
+	filterType := viper.GetInt("filterType")
+	filterBy := viper.GetStringSlice("filterBy")
+
+	if filterType <= 0 || filterType > 2 {
+		filterType = 0
+		log.Error().Msg("Invalid filterType (outside range [0-2]), will not filter samples")
+	} else if len(filterBy) == 0 {
+		filterType = 0
+		log.Error().Msg("Nothing to filterBy (no metric names provided), will not filter samples")
+	}
+
+	return filterType, filterBy
+}
+
+// filterSample filters metric by name, returns true if caught by filter
+// If true, we skip sending this metric
+// Metric types as follows:
+// - 0 = none (will not filter)
+// - 1 = whitelist (only metrics in filterBy allowed)
+// - 2 = blacklist (any metric in filterBy is denied)
+func filterSample(name *string, filterType *int, filterBy *[]string) bool {
+
+	var inSlice bool = false
+	for _, m := range *filterBy {
+		if strings.EqualFold(m, *name) {
+			inSlice = true
+			break
+		}
+	}
+
+	if (!inSlice && *filterType == 1) ||
+		(inSlice && *filterType == 2) {
+		return true
+	}
+
+	return false
 }
 
 func sendSamples(ctx context.Context, w writer, samples model.Samples) error {
