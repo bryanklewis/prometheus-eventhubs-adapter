@@ -313,7 +313,7 @@ func getFilterConfig() (int, []string) {
 	filterType := viper.GetInt("filterType")
 	filterBy := strings.Split(viper.GetString("filterBy"), ",")
 
-	if filterType <= 0 || filterType > 2 {
+	if filterType < 0 || filterType > 2 {
 		filterType = 0
 		log.Error().Msg("Invalid filterType (outside range [0-2]), will not filter samples")
 	} else if len(filterBy) == 0 {
