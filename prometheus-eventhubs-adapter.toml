@@ -16,7 +16,7 @@
 
 ## Prometheus metrics filter
 #filter_type = "0" # Example: "0", "1", "2"
-#filter_by = "none" # Example: "container_cpu_usage_seconds_total"
+#filter_by = "" # Example: "container_cpu_usage_seconds_total"
 
 ## Adapter logging
 #log_level = "info" # Example: "error", "warn", "info", "debug"
