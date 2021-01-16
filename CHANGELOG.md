@@ -12,6 +12,14 @@ Template:
 ### Fixed
 ```
 
+## v0.4.2 - 14 December 2020
+### Changed
+- build with golang 1.15.6
+- use azure build agent{-latest}
+- bump project dependencies
+### Removed
+- viper aliases in config
+
 ## v0.4.1 - 18 December 2019
 ### Changed
 - build with golang 1.13.5

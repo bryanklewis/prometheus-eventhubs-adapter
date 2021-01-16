@@ -7,13 +7,13 @@ trigger:
     - master
    
 variables:
-    GOVERSION: '1.13.5'
+    GOVERSION: '1.15.6'
     LDFLAGS: "-w -s -X main.Version=$(Build.SourceBranchName) -X main.Commit=$(Build.SourceVersion) -X main.Build=$(Build.BuildNumber)"
 
 jobs:
 - job: linux
   pool:
-    vmImage: 'ubuntu-16.04'
+    vmImage: 'ubuntu-latest'
   variables:
     CGO_ENABLED: '0'
     GOOS: 'linux'
@@ -80,7 +80,7 @@ jobs:
 
 - job: windows
   pool:
-    vmImage: 'vs2017-win2016'
+    vmImage: 'windows-latest'
   variables:
     CGO_ENABLED: '0'
     GOOS: 'windows'
