@@ -311,7 +311,7 @@ func protoToSamples(req *prompb.WriteRequest) model.Samples {
 func getFilterConfig() (int, []string) {
 
 	filterType := viper.GetInt("filterType")
-	filterBy := viper.GetStringSlice("filterBy")
+	filterBy := strings.Split(viper.GetString("filterBy"), ",")
 
 	if filterType <= 0 || filterType > 2 {
 		filterType = 0
