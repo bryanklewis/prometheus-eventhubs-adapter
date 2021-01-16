@@ -38,6 +38,8 @@ type config struct {
 	listenAddress string
 	writePath     string
 	telemetryPath string
+	filterType    int
+	filterBy      string
 	logLevel      string
 	writeHub      hub.EventHubConfig
 }
@@ -63,6 +65,12 @@ func parseFlags() {
 
 	flag.StringVar(&adapterConfig.telemetryPath, "telemetry_path", "/metrics", "Path for telemetry scraps.")
 	viper.SetDefault("telemetry_path", "/metrics")
+
+	flag.IntVar(&adapterConfig.filterType, "filter_type", 0, "0 (none), 1 (whitelist), 2 (blacklist).")
+	viper.SetDefault("filter_type", 0)
+
+	flag.StringVar(&adapterConfig.filterBy, "filter_by", "", "Names of metric(s) to filter by, comma-separated.")
+	viper.SetDefault("filter_by", "")
 
 	flag.StringVar(&adapterConfig.logLevel, "log_level", "info", "The log level to use [ \"error\", \"warn\", \"info\", \"debug\", \"none\" ].")
 	viper.SetDefault("log_level", "info")
