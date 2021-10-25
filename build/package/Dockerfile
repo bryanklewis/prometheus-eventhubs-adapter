@@ -56,4 +56,4 @@ EXPOSE 9201 5671 5672
 # -----------------------------------------------------------------------------
 # Run container
 # -----------------------------------------------------------------------------
-ENTRYPOINT ["/usr/bin/prometheus-eventhubs-adapter", "--listen_address=:9201"]
+ENTRYPOINT ["/usr/bin/prometheus-eventhubs-adapter"]
