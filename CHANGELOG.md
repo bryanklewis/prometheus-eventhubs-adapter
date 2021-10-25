@@ -12,6 +12,11 @@ Template:
 ### Fixed
 ```
 
+## v0.4.3 - 25 October 2021
+### Changed
+- Remove hardcoded listen_address in container
+
+---
 ## v0.4.2 - 14 December 2020
 ### Changed
 - build with golang 1.15.6
@@ -20,6 +25,7 @@ Template:
 ### Removed
 - viper aliases in config
 
+---
 ## v0.4.1 - 18 December 2019
 ### Changed
 - build with golang 1.13.5
@@ -31,6 +37,7 @@ Template:
 ### Fixed
 - linting simplify sample.Metric[]
 
+---
 ## v0.3.3 - 14 October 2019
 ### Changed
 - build with golang 1.13.1
@@ -48,6 +55,7 @@ Template:
 ### Fixed
 - Build ldflags not populating on linux
 
+---
 ## v0.3.1 - 19 August 2019
 ### Added
 - Docker image
@@ -55,18 +63,21 @@ Template:
 - Build ldflags not populating on windows
 - Documentation fixes
 
+---
 ## v0.3.0 - 08 August 2019
 ### Added
 - Public release
 - Send batch events
 - Azure Pipelines config
 
+---
 ## v0.2.0 - 26 July 2019
 ### Added
 - Avro JSON
 ### Changed
 - Use viper library for config
 
+---
 ## v0.1.0 - 12 July 2019
 ### Added
 - Adapter created
