@@ -113,10 +113,10 @@ Example TOML file: [`prometheus-eventhubs-adapter.toml`](./prometheus-eventhubs-
 
 ## Prometheus
 
-You must tell prometheus to use this remote storage adapter by adding the following lines to `prometheus.yml`:
+You must tell [prometheus](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write) to use this remote storage adapter by adding the following lines to `prometheus.yml`:
 ```yaml
 remote_write:
-  - url: "http://<adapter-address>:9201/write"
+  - url: "http://<this-adapter-address>:9201/write"
 ```
 
 ## Output
