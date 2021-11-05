@@ -6,7 +6,7 @@ require (
 	github.com/Azure/azure-amqp-common-go/v3 v3.1.0
 	github.com/Azure/azure-event-hubs-go/v3 v3.3.4
 	github.com/Azure/go-autorest/autorest v0.11.13
-	github.com/gin-gonic/gin v1.6.3
+	github.com/gin-gonic/gin v1.7.0
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/snappy v0.0.2
 	github.com/linkedin/goavro/v2 v2.10.0
