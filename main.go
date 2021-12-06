@@ -305,7 +305,7 @@ func sendSamples(ctx context.Context, w writer, samples model.Samples) error {
 	duration := time.Since(begin).Seconds()
 	if err != nil {
 		failedSamples.WithLabelValues(w.Name()).Add(float64(len(samples)))
-		// EventHub may have changed its ip appress
+		// EventHub may have changed its ip address
 		// reset the configuration to trigger a new dns resolution
 		w.ResetConfig(getWriterConfig())
 		return err
