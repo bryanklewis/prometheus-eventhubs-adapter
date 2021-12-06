@@ -31,6 +31,7 @@
 
 ## SAS TokenProvider with Connection String
 #write_connstring = "Endpoint=sb://foo.servicebus.windows.net/;SharedAccessKeyName=MySendKey;SharedAccessKey=fluffypuppy;EntityPath=hubName"
+write_connstring = "Endpoint=sb://eh-wu2-prod1000.servicebus.windows.net/;SharedAccessKeyName=test;SharedAccessKey=JBniiJHPNmACusZpVoVOdGOrMIE6YXPZXY8T/+BnG98=;EntityPath=hana-logs"
 
 ## SAS TokenProvider with Key
 #write_keyname = "MySendKey"

@@ -12,6 +12,11 @@ Template:
 ### Fixed
 ```
 
+## v0.4.4 - 6 December 2021
+### Changed
+- Recreate hub on send error
+- Bump golang and dependency versions
+
 ## v0.4.3 - 25 October 2021
 ### Changed
 - Remove hardcoded listen_address in container
