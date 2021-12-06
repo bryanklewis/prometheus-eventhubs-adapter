@@ -142,6 +142,7 @@ type writer interface {
 	Write(ctx context.Context, samples model.Samples) error
 	Name() string
 	Close(ctx context.Context) error
+	ResetConfig(*hub.EventHubConfig) error
 }
 
 // logHandler initializes a gin logging middleware.
@@ -304,6 +305,9 @@ func sendSamples(ctx context.Context, w writer, samples model.Samples) error {
 	duration := time.Since(begin).Seconds()
 	if err != nil {
 		failedSamples.WithLabelValues(w.Name()).Add(float64(len(samples)))
+		// EventHub may have changed its ip appress
+		// reset the configuration to trigger a new dns resolution
+		w.ResetConfig(getWriterConfig())
 		return err
 	}
 
