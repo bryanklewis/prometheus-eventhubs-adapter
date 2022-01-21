@@ -122,7 +122,8 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 			}
 			event := eventhub.NewEvent(serializedEvent)
 			if c.partKeyLabel != "" {
-				event.PartitionKey = &c.partKeyLabel
+				//todo cast sample.Metric[&c.partKeyLabel] to string
+				//event.PartitionKey = &c.partKeyLabel
 			}
 			events = append(events, event)
 		}
@@ -153,7 +154,7 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 			}
 			if c.partKeyLabel != "" {
 				//todo cast sample.Metric[&c.partKeyLabel] to string
-				event.PartitionKey = sample.Metric[&c.partKeyLabel]
+				//event.PartitionKey = sample.Metric[&c.partKeyLabel]
 			}
 
 			if err := c.hub.Send(ctx, event); err != nil {
