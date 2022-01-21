@@ -43,6 +43,7 @@ type EventHubConfig struct {
 	ClientSecret string
 	CertPath     string
 	CertPassword string
+	PartKeyLabel string
 	Batch        bool
 	ADXMapping   string
 	Serializer   serializers.SerializerConfig
@@ -50,11 +51,12 @@ type EventHubConfig struct {
 
 // EventHubClient sends Prometheus samples to Event Hubs
 type EventHubClient struct {
-	hub         *eventhub.Hub
-	runtimeInfo *eventhub.HubRuntimeInformation
-	batch       bool
-	adxMapping  string
-	serializer  serializers.Serializer
+	hub          *eventhub.Hub
+	runtimeInfo  *eventhub.HubRuntimeInformation
+	batch        bool
+	partKeyLabel string
+	adxMapping   string
+	serializer   serializers.Serializer
 }
 
 // NewClient creates a new event hub client
@@ -77,11 +79,12 @@ func NewClient(cfg *EventHubConfig) (*EventHubClient, error) {
 	}
 
 	client := &EventHubClient{
-		hub:         hb,
-		runtimeInfo: rt,
-		adxMapping:  cfg.ADXMapping,
-		batch:       cfg.Batch,
-		serializer:  ser,
+		hub:          hb,
+		runtimeInfo:  rt,
+		adxMapping:   cfg.ADXMapping,
+		batch:        cfg.Batch,
+		partKeyLabel: cfg.PartKeyLabel,
+		serializer:   ser,
 	}
 
 	return client, nil
@@ -117,8 +120,11 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 				log.ErrorObj(err).Msg("Could not serialize sample")
 				continue
 			}
-
-			events = append(events, eventhub.NewEvent(serializedEvent))
+			event := eventhub.NewEvent(serializedEvent)
+			if c.partKeyLabel != "" {
+				//todo event.PartitionKey = sample.Metric[c.partKeyLabel]
+			}
+			events = append(events, event)
 		}
 
 		if err := c.hub.SendBatch(ctx, eventhub.NewEventBatchIterator(events...)); err != nil {
@@ -144,6 +150,9 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 				"Table":                     string(metricName),
 				"Format":                    c.serializer.ADXFormat().String(),
 				"IngestionMappingReference": c.adxMapping,
+			}
+			if c.partKeyLabel != "" {
+				//todo event.PartitionKey = sample.Metric[c.partKeyLabel]
 			}
 
 			if err := c.hub.Send(ctx, event); err != nil {

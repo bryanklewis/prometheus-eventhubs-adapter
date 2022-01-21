@@ -88,6 +88,9 @@ func parseFlags() {
 
 	flag.StringVar(&adapterConfig.writeHub.CertPassword, "write_certpassword", "", "Password for the certificate.")
 
+	flag.StringVar(&adapterConfig.writeHub.PartKeyLabel, "partition_key_label", "", "Label name to be used as EventHub partition key.")
+	viper.SetDefault("partition_key_label", "")
+
 	flag.BoolVar(&adapterConfig.writeHub.Batch, "write_batch", true, "Send batch events or single events.")
 	viper.SetDefault("write_batch", true)
 
@@ -182,6 +185,7 @@ func getWriterConfig() *hub.EventHubConfig {
 		CertPath:     viper.GetString("write_certpath"),
 		CertPassword: viper.GetString("write_certpassword"),
 		Batch:        viper.GetBool("write_batch"),
+		PartKeyLabel: viper.GetString("partition_key_label"),
 		ADXMapping:   viper.GetString("write_adxmapping"),
 		Serializer:   serializers.SerializerConfig{DataFormat: viper.GetString("write_serializer")},
 	}

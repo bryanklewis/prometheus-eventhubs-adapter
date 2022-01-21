@@ -38,6 +38,7 @@ Flag | Description
 `--log_level`          | the log level to use, from least to most verbose: none, error, warn, info, debug. Using debug will enable an HTTP access log for all incomming connections. *Default info*
 `--write_batch`        | send samples in batches (true) or as single events (false). *Default true*
 `--write_serializer`   | serializer to use when sending events. See [json](#json), [avro-json](#avro-json)
+`--partition_key_label`| metric label to be used as EventHub partition key, optional
 `--write_adxmapping`   | the name of the Azure Data Explorer (ADX or Kusto) mapping used for Schema column mapping of events during [data injestion](./docs/adx.md) to an ADX cluster. *Default promMap*
 
 #### Event Hub
