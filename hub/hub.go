@@ -152,7 +152,8 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 				"IngestionMappingReference": c.adxMapping,
 			}
 			if c.partKeyLabel != "" {
-				event.PartitionKey = &c.partKeyLabel
+				//todo cast sample.Metric[&c.partKeyLabel] to string
+				event.PartitionKey = sample.Metric[&c.partKeyLabel]
 			}
 
 			if err := c.hub.Send(ctx, event); err != nil {
