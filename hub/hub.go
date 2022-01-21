@@ -122,7 +122,7 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 			}
 			event := eventhub.NewEvent(serializedEvent)
 			if c.partKeyLabel != "" {
-				//todo event.PartitionKey = sample.Metric[c.partKeyLabel]
+				event.PartitionKey = &c.partKeyLabel
 			}
 			events = append(events, event)
 		}
@@ -152,7 +152,7 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 				"IngestionMappingReference": c.adxMapping,
 			}
 			if c.partKeyLabel != "" {
-				//todo event.PartitionKey = sample.Metric[c.partKeyLabel]
+				event.PartitionKey = &c.partKeyLabel
 			}
 
 			if err := c.hub.Send(ctx, event); err != nil {
