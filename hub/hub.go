@@ -124,8 +124,13 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 
 			if c.partKeyLabel != "" {
 				log.Debug().Msg("using partition key: " + c.partKeyLabel)
-				partKey := (string)(sample.Metric[model.LabelName(c.partKeyLabel)])
-				event.PartitionKey = &partKey
+				partKeyLabelName := model.LabelName(c.partKeyLabel)
+				if partKey, ok := sample.Metric[partKeyLabelName]; ok {
+					partKeyStr := (string)(partKey)
+					event.PartitionKey = &partKeyStr
+				} else {
+					log.Debug().Msg("partition key doesn't exist: " + c.partKeyLabel)
+				}
 			}
 
 			events = append(events, event)
@@ -157,8 +162,13 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 			}
 			if c.partKeyLabel != "" {
 				log.Debug().Msg("using partition key: " + c.partKeyLabel)
-				partKey := (string)(sample.Metric[model.LabelName(c.partKeyLabel)])
-				event.PartitionKey = &partKey
+				partKeyLabelName := model.LabelName(c.partKeyLabel)
+				if partKey, ok := sample.Metric[partKeyLabelName]; ok {
+					partKeyStr := (string)(partKey)
+					event.PartitionKey = &partKeyStr
+				} else {
+					log.Debug().Msg("partition key doesn't exist: " + c.partKeyLabel)
+				}
 			}
 
 			if err := c.hub.Send(ctx, event); err != nil {
