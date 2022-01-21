@@ -122,6 +122,7 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 			}
 			event := eventhub.NewEvent(serializedEvent)
 			if c.partKeyLabel != "" {
+				log.Debug().Msg("using partition key: " + c.partKeyLabel)
 				//todo cast sample.Metric[&c.partKeyLabel] to string
 				//event.PartitionKey = &c.partKeyLabel
 			}
@@ -153,6 +154,7 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 				"IngestionMappingReference": c.adxMapping,
 			}
 			if c.partKeyLabel != "" {
+				log.Debug().Msg("using partition key: " + c.partKeyLabel)
 				//todo cast sample.Metric[&c.partKeyLabel] to string
 				//event.PartitionKey = sample.Metric[&c.partKeyLabel]
 			}
