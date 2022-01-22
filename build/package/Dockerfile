@@ -37,16 +37,9 @@ COPY prometheus-eventhubs-adapter.toml /etc/prometheus-eventhubs-adapter/
 # -----------------------------------------------------------------------------
 # Provide a non-root user to run the process.
 # -----------------------------------------------------------------------------
-RUN addgroup -g 1001 -S prom && \
-    adduser -u 1001 -S prom -G prom && \
-    chown -R 1001:1001 /usr/bin/prometheus-eventhubs-adapter /etc/prometheus-eventhubs-adapter && \
-    chmod -R 755 /usr/bin/prometheus-eventhubs-adapter && \
-    chmod -R 644 /etc/prometheus-eventhubs-adapter
-
 # -----------------------------------------------------------------------------
 # Define execution user
 # -----------------------------------------------------------------------------
-USER prom
 
 # -----------------------------------------------------------------------------
 # Expose service ports
