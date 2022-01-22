@@ -123,11 +123,12 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 			event := eventhub.NewEvent(serializedEvent)
 
 			if c.partKeyLabel != "" {
-				log.Debug().Msg("using partition key: " + c.partKeyLabel)
+				log.Debug().Msg("using partition key label: " + c.partKeyLabel)
 				partKeyLabelName := model.LabelName(c.partKeyLabel)
 				if partKey, ok := sample.Metric[partKeyLabelName]; ok {
 					partKeyStr := (string)(partKey)
 					event.PartitionKey = &partKeyStr
+					log.Debug().Msg("Partition key: " + partKeyStr)
 				} else {
 					log.Debug().Msg("partition key doesn't exist: " + c.partKeyLabel)
 				}
@@ -161,11 +162,12 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 				"IngestionMappingReference": c.adxMapping,
 			}
 			if c.partKeyLabel != "" {
-				log.Debug().Msg("using partition key: " + c.partKeyLabel)
+				log.Debug().Msg("using partition key label: " + c.partKeyLabel)
 				partKeyLabelName := model.LabelName(c.partKeyLabel)
 				if partKey, ok := sample.Metric[partKeyLabelName]; ok {
 					partKeyStr := (string)(partKey)
 					event.PartitionKey = &partKeyStr
+					log.Debug().Msg("Partition key: " + partKeyStr)
 				} else {
 					log.Debug().Msg("partition key doesn't exist: " + c.partKeyLabel)
 				}
