@@ -130,7 +130,7 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 					event.PartitionKey = &partKeyStr
 					log.Debug().Msg("Partition key: " + partKeyStr)
 				} else {
-					log.Debug().Msg("partition key doesn't exist: " + c.partKeyLabel)
+					log.Debug().Msg("partition key label not found: " + c.partKeyLabel)
 				}
 			}
 
@@ -169,7 +169,7 @@ func (c *EventHubClient) Write(ctx context.Context, samples model.Samples) error
 					event.PartitionKey = &partKeyStr
 					log.Debug().Msg("Partition key: " + partKeyStr)
 				} else {
-					log.Debug().Msg("partition key doesn't exist: " + c.partKeyLabel)
+					log.Debug().Msg("partition key label not found: " + c.partKeyLabel)
 				}
 			}
 
