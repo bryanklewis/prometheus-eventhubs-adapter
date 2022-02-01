@@ -12,6 +12,10 @@ Template:
 ### Fixed
 ```
 
+## v0.5.0 - 31 January 2022
+### Added
+- partition key send support, thanks to @jotka
+
 ## v0.4.4 - 6 December 2021
 ### Changed
 - Recreate hub on send error
