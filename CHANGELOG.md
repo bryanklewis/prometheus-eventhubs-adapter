@@ -12,6 +12,10 @@ Template:
 ### Fixed
 ```
 
+## v0.5.1 - 11 July 2023
+### Changed
+- Bump go, gin-gonic and alpine to fix security vulnerabilities, thanks to @gbulloch-edb
+
 ## v0.5.0 - 31 January 2022
 ### Added
 - partition key send support, thanks to @jotka
