@@ -5,9 +5,9 @@ trigger:
   branches:
     include:
     - master
-   
+
 variables:
-    GOVERSION: '1.17.4'
+    GOVERSION: '1.19.10'
     LDFLAGS: "-w -s -X main.Version=$(Build.SourceBranchName) -X main.Commit=$(Build.SourceVersion) -X main.Build=$(Build.BuildNumber)"
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
       displayName: 'Use Go $(GOVERSION)'
       inputs:
         version: '$(GOVERSION)'
-    
+
     - task: Go@0
       displayName: 'Compile $(GOOS)/$(GOARCH)'
       inputs:
@@ -35,14 +35,14 @@ jobs:
       displayName: 'Stage supporting files'
       inputs:
         sourceFolder: $(Build.SourcesDirectory)
-        contents: '$(System.TeamProject).toml' 
+        contents: '$(System.TeamProject).toml'
         targetFolder: $(Build.BinariesDirectory)
 
     - task: ArchiveFiles@2
       displayName: 'Create application archive'
       inputs:
-        rootFolderOrFile: '$(Build.BinariesDirectory)' 
-        includeRootFolder: false 
+        rootFolderOrFile: '$(Build.BinariesDirectory)'
+        includeRootFolder: false
         archiveType: 'tar'
         tarCompression: 'gz'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(System.TeamProject)_$(Build.SourceBranchName)_$(GOOS)_$(GOARCH).tar.gz'
@@ -85,7 +85,7 @@ jobs:
     CGO_ENABLED: '0'
     GOOS: 'windows'
     GOARCH: 'amd64'
-  
+
   steps:
     - task: GoTool@0
       displayName: 'Use Go $(GOVERSION)'
@@ -102,14 +102,14 @@ jobs:
       displayName: 'Stage supporting files'
       inputs:
         sourceFolder: $(Build.SourcesDirectory)
-        contents: '$(System.TeamProject).toml' 
+        contents: '$(System.TeamProject).toml'
         targetFolder: $(Build.BinariesDirectory)
 
     - task: ArchiveFiles@2
       displayName: 'Create application archive'
       inputs:
-        rootFolderOrFile: '$(Build.BinariesDirectory)' 
-        includeRootFolder: false 
+        rootFolderOrFile: '$(Build.BinariesDirectory)'
+        includeRootFolder: false
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(System.TeamProject)_$(Build.SourceBranchName)_$(GOOS)_$(GOARCH).zip'
         verbose: true
