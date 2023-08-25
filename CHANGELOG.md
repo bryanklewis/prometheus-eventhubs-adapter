@@ -12,6 +12,10 @@ Template:
 ### Fixed
 ```
 
+## v0.5.2 - 25 August 2023
+### Changed
+- Bump promhttp lib to fix resource overrun security issue, thanks to @matthewhudsonedb
+
 ## v0.5.1 - 11 July 2023
 ### Changed
 - Bump go, gin-gonic and alpine to fix security vulnerabilities, thanks to @gbulloch-edb
