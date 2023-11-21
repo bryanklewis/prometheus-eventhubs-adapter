@@ -7,7 +7,7 @@ trigger:
     - master
 
 variables:
-    GOVERSION: '1.19.10'
+    GOVERSION: '1.21.4'
     LDFLAGS: "-w -s -X main.Version=$(Build.SourceBranchName) -X main.Commit=$(Build.SourceVersion) -X main.Build=$(Build.BuildNumber)"
 
 jobs:
