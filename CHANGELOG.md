@@ -12,6 +12,10 @@ Template:
 ### Fixed
 ```
 
+## v0.5.4 - 04 March 2024
+### Changed
+- Bump crypto lib, thanks to @matthewhudsonedb
+
 ## v0.5.3 - 20 November 2023
 ### Changed
 - Bump grpc lib, thanks to @matthewhudsonedb
